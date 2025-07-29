@@ -1,0 +1,14 @@
+.group-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 10px;
+}
+
+.group-title .title {
+    flex: 1;
+}
+
+.group-title button {
+    margin-bottom: 0px;
+}

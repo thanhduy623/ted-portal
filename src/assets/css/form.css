@@ -1,0 +1,18 @@
+label {
+    font-style: italic;
+    padding-left: 6px;
+    margin-bottom: 3px;
+    display: block;
+}
+
+input,
+select {
+    height: 42px;
+    width: 100%;
+
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: var(--size-text-normal);
+    border: solid 2px var(--theme-color-gray);
+    margin-bottom: 16px;
+}

@@ -1,0 +1,33 @@
+table {
+    width: 100%;
+    border-radius: 16px;
+    border: solid 2px var(--theme-color-gray);
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
+tr {
+    height: 28px;
+}
+
+th,
+td {
+    border: 1px solid var(--theme-color-gray);
+    padding: 10px;
+    text-align: left;
+}
+
+thead,
+th {
+    background-color: var(--theme-color-1);
+    text-align: center;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: var(--theme-color-ashy);
+}
+
+tr:hover {
+    background-color: var(--theme-color-5);
+}

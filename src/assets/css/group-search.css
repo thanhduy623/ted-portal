@@ -1,0 +1,15 @@
+.group-search {
+    padding: 16px;
+    border-radius: 16px;
+    border: solid 2px var(--theme-color-gray);
+    margin-bottom: 16px;
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0px 16px;
+}
+
+.group-search .input {
+    padding: 8px;
+    margin-bottom: 0px;
+}

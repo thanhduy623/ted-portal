@@ -1,0 +1,60 @@
+@import url(./text.css);
+@import url(./form.css);
+@import url(./button.css);
+@import url(./group-title.css);
+@import url(./group-search.css);
+@import url(./table.css);
+
+:root {
+    --theme-color-1: #17213a;
+    --theme-color-2: #113F67;
+    --theme-color-3: #003161;
+    --theme-color-4: #34699A;
+    --theme-color-5: #8CCDEB;
+
+    --theme-color-bg: #EAEFEF;
+
+    --theme-color-white: #ffffff;
+    --theme-color-black: #000000;
+    --theme-color-gray: #7A7A7A;
+    --theme-color-ashy: #DBDBDB;
+
+    --size-text-h1: 24px;
+    --size-text-h2: 20px;
+    --size-text-h3: 16px;
+    --size-text-normal: 14px;
+    --size-text-small: 10px;
+
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    font-family: 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--theme-color-bg);
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
