@@ -6,6 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/ted-portal/', // ✅ thêm dòng này với tên repo chính xác
   plugins: [
     vue(),
     vueDevTools(),
