@@ -1,13 +1,12 @@
 <!-- src/layouts/DefaultLayout.vue -->
 <template>
     <div class="layout">
-        <comp-header />
+        <comp-header :is-visible="showMenu" @toggle-menu="showMenu = !showMenu" />
+
 
         <div class="container">
-            <comp-navbar />
-            <div class="main-content">
-                <router-view />
-            </div>
+            <comp-navbar v-if="showMenu" />
+            <div class="main-content"> <router-view /> </div>
         </div>
     </div>
 </template>
@@ -21,7 +20,12 @@
         components: {
             compHeader,
             compNavbar
-        }
+        },
+        data() {
+            return {
+                showMenu: true,
+            }
+        },
     };
 </script>
 

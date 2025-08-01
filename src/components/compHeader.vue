@@ -1,6 +1,6 @@
 <template>
     <header>
-        <img id="ic-hambuger" src="../assets/picture/ic-buger-menu.png" alt="">
+        <img id="ic-hambuger" @click="$emit('toggle-menu')" src="../assets/picture/ic-buger-menu.png" alt="">
         <div id="group-logo">
             <div id="group-title">
                 <h1 id="title">TED TEAM PORTAL</h1>

@@ -4,7 +4,6 @@
     border: solid 2px var(--theme-color-gray);
     margin-bottom: 16px;
     display: grid;
-
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 0px 16px;
 }

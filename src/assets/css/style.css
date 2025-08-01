@@ -1,7 +1,8 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
 @import url(./text.css);
 @import url(./form.css);
 @import url(./button.css);
-@import url(./group-title.css);
 @import url(./group-search.css);
 @import url(./table.css);
 
@@ -13,6 +14,9 @@
     --theme-color-5: #8CCDEB;
 
     --theme-color-bg: #EAEFEF;
+    --theme-color-error: #8A0000;
+    --theme-color-success: #3E5F44;
+    --theme-color-warning: #E9A319;
 
     --theme-color-white: #ffffff;
     --theme-color-black: #000000;
@@ -34,6 +38,10 @@
     box-sizing: border-box;
     border: none;
     outline: none;
+
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 html,
@@ -43,9 +51,6 @@ body {
     overflow: auto;
     font-family: 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: var(--theme-color-bg);
-
-    scrollbar-width: none;
-    -ms-overflow-style: none;
 }
 
 html::-webkit-scrollbar,
@@ -53,8 +58,24 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+hr {
+    margin-bottom: 10px;
+    border: 1px solid var(--theme-color-gray);
+}
+
 #app {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+.flex-col-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0px 10px;
 }

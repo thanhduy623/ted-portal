@@ -10,6 +10,8 @@ import YearView from '@/views/YearView.vue'
 import GenerationView from '@/views/GenerationView.vue'
 
 import TeddyView from '@/views/TeddyView.vue'
+import AddTeddy from '@/views/AddTeddy.vue'
+
 import EventView from '@/views/EventView.vue'
 import MistakeView from '@/views/MistakeView.vue'
 import ShiftView from '@/views/ShiftView.vue'
@@ -29,6 +31,8 @@ const routes = [
       { path: 'department', component: HomePage },
 
       { path: 'teddy', component: TeddyView },
+      { path: 'teddy/add', component: AddTeddy },
+
       { path: 'event', component: EventView },
       { path: 'mistake', component: MistakeView },
       { path: 'shift', component: ShiftView },

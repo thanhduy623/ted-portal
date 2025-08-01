@@ -1,0 +1,18 @@
+export default [
+    { key: "0", name: "Ngoại ngữ" },
+    { key: "1", name: "Mỹ thuật công nghiệp" },
+    { key: "2", name: "Kế toán" },
+    { key: "3", name: "Khoa học xã hội và Nhân văn" },
+    { key: "4", name: "Điện - Điện tử" },
+    { key: "5", name: "Công nghệ thông tin" },
+    { key: "6", name: "Khoa học ứng dụng" },
+    { key: "7", name: "Quản trị kinh doanh" },
+    { key: "8", name: "Kỹ thuật công trình" },
+    { key: "9", name: "Môi trường và Bảo hộ Lao động" },
+    { key: "A", name: "Lao động công đoàn" },
+    { key: "B", name: "Tài chính - Ngân hàng" },
+    { key: "C", name: "Toán thống kê" },
+    { key: "D", name: "Khoa học thể thao" },
+    { key: "E", name: "Luật" },
+    { key: "H", name: "Dược" },
+]

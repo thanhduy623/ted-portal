@@ -9,8 +9,6 @@
         <input type="text" v-model="username" placeholder="Mã số sinh viên">
         <input type="password" v-model="password" placeholder="Mật khẩu được cung cấp">
 
-        <p v-if="loginError" class="error-message">{{ loginError }}</p>
-
         <button type="submit">ĐĂNG NHẬP</button>
     </form>
 </template>
@@ -25,35 +23,25 @@
             return {
                 username: '',
                 password: '',
-                loginError: null // Thuộc tính để lưu trữ thông báo lỗi đăng nhập
+                loginError: null
             }
         },
         methods: {
             async login() {
                 // Reset lỗi trước mỗi lần thử đăng nhập
-                this.loginError = null;
+                this.$eventBus.showLoading();
 
                 const data = {
                     username: this.username,
                     password: this.password
                 };
 
-                try {
-                    const response = await connectGAS(null, "login", data);
-                    if (response.success) {
-                        sessionStorage.setItem("tokenAccess", response.accessToken);
-                        sessionStorage.setItem("user", JSON.stringify(response.user));
+                const response = await connectGAS("login", data);
+                this.$eventBus.hideLoading();
+                sessionStorage.setItem("tokenAccess", response.token);
+                sessionStorage.setItem("user", JSON.stringify(response.user));
 
-                        this.$router.push('/');
-                    } else {
-                        // Hiển thị thông báo lỗi từ GAS
-                        this.loginError = response.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
-                    }
-                } catch (error) {
-                    // Bắt và hiển thị lỗi nếu có vấn đề khi kết nối GAS
-                    this.loginError = error.message || 'Có lỗi xảy ra khi kết nối. Vui lòng kiểm tra mạng.';
-                    console.error('Lỗi đăng nhập:', error);
-                }
+                this.$router.push('/');
             }
         }
     }
