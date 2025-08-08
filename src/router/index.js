@@ -15,6 +15,7 @@ import UpdateTeddy from '@/views/UpdateTeddy.vue'
 
 import EventView from '@/views/EventView.vue'
 import AddEvent from '@/views/AddEvent.vue'
+import UpdateEvent from '@/views/UpdateEvent.vue'
 
 import MistakeView from '@/views/MistakeView.vue'
 import ShiftView from '@/views/ShiftView.vue'
@@ -39,6 +40,7 @@ const routes = [
 
       { path: 'event', component: EventView },
       { path: 'event/add', component: AddEvent },
+      { path: 'event/edit/:id', component: UpdateEvent },
 
       { path: 'mistake', component: MistakeView },
       { path: 'shift', component: ShiftView },

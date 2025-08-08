@@ -68,8 +68,8 @@
 
     // Lấy dữ liệu
     const getThisYearEvent = async () => {
-        const response = await connectGAS("getThisYearEvent", {})
-        tablesConfig.value = response.data
+        const response = await connectGAS("getThisYearEvent", {});
+        tablesConfig.value = response.data.reverse();
     }
 
     // Mounted

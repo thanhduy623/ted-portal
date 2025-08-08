@@ -1,6 +1,7 @@
 <template>
     <div class="input-error-group">
-        <input v-model="internalValue" :placeholder="placeholder" :required="required" @blur="validate" type="mail" />
+        <input v-model="internalValue" :placeholder="placeholder" :required="required" @blur="validate" v-bind="$attrs"
+            type="mail" />
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>

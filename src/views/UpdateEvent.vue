@@ -6,10 +6,10 @@
             <!-- Năm học và phân loại -->
             <div class="flex-row-container">
                 <selectYear v-model:modelField="dataModel.idSchoolYear"
-                    v-model:validateField="dataValidate.idSchoolYear" />
+                    v-model:validateField="dataValidate.idSchoolYear" disabled />
 
-                <SelectEventType v-model:modelField="dataModel.typeEvent"
-                    v-model:validateField="dataValidate.typeEvent" />
+                <SelectEventType v-model:modelField="dataModel.typeEvent" v-model:validateField="dataValidate.typeEvent"
+                    disabled />
             </div>
             <!-- Tên sự kiện và tên tắt -->
             <InputBase v-model:modelField="dataModel.nameEvent" v-model:validateField="dataValidate.nameEvent"
@@ -31,19 +31,22 @@
                     placeholder="Ghi chú" :required="false" />
             </div>
 
-
             <!-- Nhóm nút chức năng -->
             <div class="flex-row-container right">
-                <button @click.prevent="cleanForm"> LÀM MỚI </button>
-                <button :disabled="!isFormValid" @click.prevent="submitForm" class="primary"> TẠO MỚI </button>
+                <button v-if="isDisable" @click.prevent="changeData"> THAY ĐỔI </button>
+                <button v-if="!isDisable" :disabled="!isFormValid" @click.prevent="submitForm" class="primary"> CẬP NHẬT
+                </button>
             </div>
         </form>
     </div>
 </template>
 
 <script setup>
-    import { ref, computed } from 'vue'
+    import { ref, computed, watch } from 'vue'
+    import { useRoute } from 'vue-router'
+
     import { connectGAS } from '@/utils/connectGAS'
+    import formLock from '@/utils/formLockUtils'
     import compTitlePage from '@/components/compTitlePage.vue'
 
     import SelectYear from '@/components/select/SelectYear.vue'
@@ -53,24 +56,44 @@
     import InputDate from '@/components/inputs/InputDate.vue'
     import InputBase from '@/components/inputs/InputBase.vue'
 
+    // Lấy route hiện tại
+    const route = useRoute()
 
-    const titlePage = "Thêm sự kiện năm học"
+    // Dữ liệu ban đầu
+    const titlePage = "Thông tin sự kiện"
     const dataModel = ref({})
     const dataValidate = ref({})
+    const isDisable = ref(true)
+
+    // Log khi id thay đổi hoặc khi trang load lần đầu
+    watch(
+        () => route.params.id,
+        async (idParam) => {
+            const response = await connectGAS("getEventByConditions", { idEvent: idParam })
+            dataModel.value = response.data[0];
+            formLock.lockForm()
+        },
+        { immediate: true }
+    );
+
 
     // Kiểm tra hợp lệ toàn form
     const isFormValid = computed(() =>
         Object.values(dataValidate.value).every(v => v === true)
     )
 
-    // Submit form
-    async function submitForm() {
-        await connectGAS('addEvent', dataModel.value);
-        cleanForm();
+
+    // Change Data event
+    function changeData() {
+        isDisable.value = false;
+        formLock.unlockForm();
     }
 
-    async function cleanForm() {
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        window.location.reload();
+    // Submit form
+    async function submitForm() {
+        isDisable.value = true;
+        formLock.lockForm();
+        await connectGAS("updateEvent", dataModel.value);
     }
+
 </script>

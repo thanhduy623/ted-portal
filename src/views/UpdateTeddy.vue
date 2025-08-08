@@ -5,15 +5,15 @@
             <h2>Thông tin cá nhân</h2>
             <!-- Nhóm họ và tên -->
             <div class="flex-row-container">
-                <InputBase v-model:modelField="teddyModel.lastName" v-model:validateField="teddyValidate.lastName"
+                <InputBase v-model:modelField="dataModel.lastName" v-model:validateField="dataValidate.lastName"
                     placeholder="Nhập họ lót" :required="true" />
-                <InputBase v-model:modelField="teddyModel.firstName" v-model:validateField="teddyValidate.firstName"
+                <InputBase v-model:modelField="dataModel.firstName" v-model:validateField="dataValidate.firstName"
                     placeholder="Nhập tên" :required="true" />
             </div>
             <!-- Giới tính và ngày sinh -->
             <div class="flex-row-container">
-                <selectGender v-model:modelField="teddyModel.gender" v-model:validateField="teddyValidate.gender" />
-                <InputDate v-model:modelField="teddyModel.birthday" v-model:validateField="teddyValidate.birthday"
+                <selectGender v-model:modelField="dataModel.gender" v-model:validateField="dataValidate.gender" />
+                <InputDate v-model:modelField="dataModel.birthday" v-model:validateField="dataValidate.birthday"
                     :required="true" />
             </div>
 
@@ -21,17 +21,16 @@
             <h2>Thông tin sinh viên</h2>
             <!-- Mã sinh viên và khoa -->
             <div class="flex-row-container">
-                <InputStudent v-model:modelField="teddyModel.idTeddy" v-model:validateField="teddyValidate.idTeddy"
-                    placeholder="Nhập mã sinh viên" :required="true" />
-                <SelectFaculty v-model:modelField="teddyModel.studentFaculty"
-                    v-model:validateField="teddyValidate.studentFaculty" />
+                <InputStudent v-model:modelField="dataModel.idTeddy" v-model:validateField="dataValidate.idTeddy"
+                    placeholder="Nhập mã sinh viên" :required="true" disabled />
+                <SelectFaculty v-model:modelField="dataModel.studentFaculty"
+                    v-model:validateField="dataValidate.studentFaculty" />
             </div>
             <!-- Số điện thoại và mail cá nhân -->
             <div class="flex-row-container">
-                <InputPhone v-model:modelField="teddyModel.phone" v-model:validateField="teddyValidate.phone"
+                <InputPhone v-model:modelField="dataModel.phone" v-model:validateField="dataValidate.phone"
                     placeholder="Nhập số điện thoại" :required="true" />
-                <InputMail v-model:modelField="teddyModel.personalMail"
-                    v-model:validateField="teddyValidate.personalMail"
+                <InputMail v-model:modelField="dataModel.personalMail" v-model:validateField="dataValidate.personalMail"
                     placeholder="Địa chỉ mail cá nhân (teddy@gmail.com)" :required="true" />
             </div>
 
@@ -39,21 +38,20 @@
             <h2>Thông tin nhân sự</h2>
             <!-- Bộ phận và chức vụ -->
             <div class="flex-row-container">
-                <selectTeam v-model:modelField="teddyModel.idTeam" v-model:validateField="teddyValidate.idTeam" />
-                <selectPosition v-model:modelField="teddyModel.position"
-                    v-model:validateField="teddyValidate.position" />
+                <selectTeam v-model:modelField="dataModel.idTeam" v-model:validateField="dataValidate.idTeam" />
+                <selectPosition v-model:modelField="dataModel.position" v-model:validateField="dataValidate.position" />
             </div>
             <!-- Thế hệ và trạng thái -->
             <div class="flex-row-container">
-                <SelectGeneration v-model:modelField="teddyModel.generation"
-                    v-model:validateField="teddyValidate.generation" />
-                <SelectTeddyStatus v-model:modelField="teddyModel.status"
-                    v-model:validateField="teddyValidate.status" />
+                <SelectGeneration v-model:modelField="dataModel.generation"
+                    v-model:validateField="dataValidate.generation" />
+                <SelectTeddyStatus v-model:modelField="dataModel.status" v-model:validateField="dataValidate.status" />
             </div>
 
             <div class="flex-row-container right">
-                <button @click.prevent="cleanForm"> LÀM MỚI </button>
-                <button :disabled="!isFormValid" @click.prevent="submitForm" class="primary"> TẠO MỚI </button>
+                <button v-if="isDisable" @click.prevent="changeData"> THAY ĐỔI </button>
+                <button v-if="!isDisable" :disabled="!isFormValid" @click.prevent="submitForm" class="primary"> CẬP NHẬT
+                </button>
             </div>
         </form>
     </div>
@@ -64,6 +62,7 @@
     import { useRoute } from 'vue-router'
 
     import { connectGAS } from '@/utils/connectGAS'
+    import formLock from '@/utils/formLockUtils'
     import compTitlePage from '@/components/compTitlePage.vue'
 
     import InputBase from '@/components/inputs/InputBase.vue'
@@ -84,36 +83,17 @@
 
     // Dữ liệu ban đầu
     const titlePage = "Thông tin nhân sự"
-    const teddyModel = ref({})
-    const teddyValidate = ref({})
+    const dataModel = ref({})
+    const dataValidate = ref({})
+    const isDisable = ref(true)
 
     // Log khi id thay đổi hoặc khi trang load lần đầu
     watch(
         () => route.params.id,
-        async (newId) => {
-            console.log('ID trên URL:', newId);
-            if (newId) {
-                try {
-                    // Gọi hàm connectGAS và đợi kết quả
-                    const response = await connectGAS("getTeddyByConditions", { idTeddy: newId });
-                    console.log('Kết quả từ GAS:', response.data);
-
-                    // KIỂM TRA: Dữ liệu trả về là một mảng, cần lấy phần tử đầu tiên
-                    // Sử dụng 'response.data[0]' để lấy đối tượng nhân sự từ mảng
-                    if (response.data && response.data.length > 0) {
-                        teddyModel.value = response.data[0];
-                        console.log('Dữ liệu nhân sự đã tải:', teddyModel.value);
-                    } else {
-                        console.warn("Không tìm thấy dữ liệu cho ID này.");
-                        teddyModel.value = {};
-                    }
-                } catch (error) {
-                    console.error("Có lỗi khi lấy dữ liệu từ Google Apps Script:", error);
-                }
-            } else {
-                // Xử lý trường hợp không có id, ví dụ: reset teddyModel
-                teddyModel.value = {};
-            }
+        async (idParam) => {
+            const response = await connectGAS("getTeddyByConditions", { idTeddy: idParam })
+            dataModel.value = response.data[0];
+            formLock.lockForm()
         },
         { immediate: true }
     );
@@ -121,17 +101,21 @@
 
     // Kiểm tra hợp lệ toàn form
     const isFormValid = computed(() =>
-        Object.values(teddyValidate.value).every(v => v === true)
+        Object.values(dataValidate.value).every(v => v === true)
     )
+
+
+    // Change Data event
+    function changeData() {
+        isDisable.value = false;
+        formLock.unlockForm();
+    }
 
     // Submit form
     async function submitForm() {
-        await connectGAS('addTeddy', teddyModel.value)
-        cleanForm()
+        isDisable.value = true;
+        formLock.lockForm();
+        await connectGAS("updateTeddy", dataModel.value);
     }
 
-    async function cleanForm() {
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        window.location.reload()
-    }
 </script>

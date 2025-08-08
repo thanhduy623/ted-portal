@@ -1,6 +1,6 @@
 <template>
     <div class="input-error-group">
-        <select v-model="internalValue" disabled>
+        <select v-model="internalValue" v-bind="$attrs">
             <option v-for="(opt, index) in options" :key="index" :value="opt.key">
                 {{ opt.name }}
             </option>
