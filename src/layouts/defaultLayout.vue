@@ -32,7 +32,7 @@
 <style scoped>
     .container {
         display: flex;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 65px);
     }
 
     .main-content {

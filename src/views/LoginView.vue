@@ -16,6 +16,7 @@
 
 <script>
     import { connectGAS } from '@/utils/connectGAS.js'
+    import { sessionSet, sessionGet } from '@/utils/sessionStore.js'
 
     export default {
         name: "LoginView",
@@ -27,6 +28,7 @@
             }
         },
         methods: {
+
             async login() {
                 // Reset lỗi trước mỗi lần thử đăng nhập
                 this.$eventBus.showLoading();
@@ -38,8 +40,13 @@
 
                 const response = await connectGAS("login", data);
                 this.$eventBus.hideLoading();
-                sessionStorage.setItem("tokenAccess", response.token);
-                sessionStorage.setItem("user", JSON.stringify(response.user));
+
+                if (!response.success) { return }
+
+                // Lưu dữ liệu phiên đăng nhập
+                sessionSet("user", response.user);
+                sessionSet("token", response.token);
+                sessionSet("masterData", response.masterData);
 
                 this.$router.push('/');
             }

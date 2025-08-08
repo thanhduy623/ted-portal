@@ -1,6 +1,8 @@
 // src/utils/connectGAS.js
 import eventBus from '@/utils/eventBus.js'
 import router from '@/router';
+import { sessionSet, sessionGet } from '@/utils/sessionStore';
+
 
 /**
  * Gửi dữ liệu đến Google Apps Script (GAS) Web App.
@@ -13,17 +15,19 @@ import router from '@/router';
 export async function connectGAS(action, data) {
     // URL của Google Apps Script Web App đã triển khai
     // Được đặt cứng ở đây để tập trung cấu hình
+    console.clear()
     const gasUrl = "https://script.google.com/macros/s/AKfycbzItlCAlaxpgnvZ3P6p5woOuesJD-po7PgpIB6anPUNCbZajQ7XlKQZaM4lnGqiWTB1Ng/exec";
+    const token = sessionGet('token');
 
     const dataToSend = {
-        token: sessionStorage.getItem("tokenAccess"),
+        token: token,
         action: action,
         data: data, // Dữ liệu chính của bạn
         timestamp: new Date().toISOString() // Thêm timestamp tự động
     };
 
     try {
-        eventBus.notify("success", "Đang lấy dữ liệu");
+        eventBus.notify("success", "Đang kết nối dữ liệu");
         eventBus.showLoading();
 
         const response = await fetch(gasUrl, {
@@ -49,7 +53,7 @@ export async function connectGAS(action, data) {
         eventBus.notify(result.status, result.message);
         console.log(result)
 
-        if (result.message == "Token đã hết hạn") {
+        if (result.message == "Token đã hết hạn" || result.message == "Thiếu token. Yêu cầu xác thực.") {
             router.push("/login");
         }
 

@@ -11,8 +11,11 @@ import GenerationView from '@/views/GenerationView.vue'
 
 import TeddyView from '@/views/TeddyView.vue'
 import AddTeddy from '@/views/AddTeddy.vue'
+import UpdateTeddy from '@/views/UpdateTeddy.vue'
 
 import EventView from '@/views/EventView.vue'
+import AddEvent from '@/views/AddEvent.vue'
+
 import MistakeView from '@/views/MistakeView.vue'
 import ShiftView from '@/views/ShiftView.vue'
 import AuthLayout from '@/layouts/authLayout.vue'
@@ -32,8 +35,11 @@ const routes = [
 
       { path: 'teddy', component: TeddyView },
       { path: 'teddy/add', component: AddTeddy },
+      { path: 'teddy/edit/:id', component: UpdateTeddy },
 
       { path: 'event', component: EventView },
+      { path: 'event/add', component: AddEvent },
+
       { path: 'mistake', component: MistakeView },
       { path: 'shift', component: ShiftView },
     ]

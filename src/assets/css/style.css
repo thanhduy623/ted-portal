@@ -63,6 +63,18 @@ hr {
     border: 1px solid var(--theme-color-gray);
 }
 
+input,
+select {
+    height: 42px;
+    width: 100%;
+
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: var(--size-text-normal);
+    border: solid 2px var(--theme-color-gray);
+    margin-bottom: 16px;
+}
+
 #app {
     display: flex;
     flex-direction: column;
@@ -78,4 +90,24 @@ hr {
     display: flex;
     flex-wrap: wrap;
     gap: 0px 10px;
+}
+
+.flex-row-container.center {
+    justify-content: center;
+}
+
+.flex-row-container.right {
+    justify-content: right;
+}
+
+.flex-row-container.left {
+    justify-content: left;
+}
+
+.error {
+    color: var(--theme-color-error);
+    font-size: var(--size-text-small);
+    padding-left: 6px;
+    height: 12px;
+    margin-bottom: 6px;
 }

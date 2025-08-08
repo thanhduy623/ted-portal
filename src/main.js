@@ -5,6 +5,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
+
 // Import các component UI toàn cục mà bạn vừa tạo
 import GlobalLoader from '@/components/globalLoader.vue';
 import GlobalNotification from '@/components/globalNotification.vue';
@@ -28,5 +29,4 @@ app.component('GlobalConfirmDialog', GlobalConfirmDialog);
 app.config.globalProperties.$eventBus = eventBus;
 
 app.use(router)
-
 app.mount('#app')

@@ -1,31 +1,39 @@
 <template>
-    <div class="table-responsive">
+    <div>
         <table>
             <thead>
                 <tr>
-                    <!-- Lặp qua columnsConfig để tạo các cột tiêu đề (<th>) -->
-                    <th v-for="(col, index) in columnsConfig">
+                    <th v-for="(col, index) in columnsConfig" :key="index">
                         {{ col.label }}
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <!-- CASE 1: RỖNG -->
-                <!-- Hiển thị thông báo "Không có dữ liệu" nếu tablesConfig rỗng -->
+                <!-- CASE 1: KHÔNG CÓ DỮ LIỆU -->
                 <tr v-if="!tablesConfig || tablesConfig.length === 0">
-                    <td :colspan="columnsConfig.length" class="no-data-message">Không có dữ liệu</td>
+                    <td :colspan="columnsConfig.length">Không có dữ liệu</td>
                 </tr>
 
                 <!-- CASE 2: CÓ DỮ LIỆU -->
-                <!-- Lặp qua tablesConfig để tạo các hàng dữ liệu -->
-                <tr v-for="(data, rowIndex) in tablesConfig">
-                    <!-- Lặp qua columnsConfig để tạo các ô dữ liệu (<td>) cho mỗi hàng -->
+                <tr v-else v-for="(row, rowIndex) in tablesConfig" :key="rowIndex">
                     <td v-for="(col, colIndex) in columnsConfig" :key="col.key || colIndex">
-                        {{ data[col.key] }}
+
+                        <!-- Nếu là cột chức năng -->
+                        <template v-if="col.key === 'actions' && col.actions">
+                            <template v-for="(action, i) in col.actions" :key="i">
+                                <i :class="action.icon" @click="action.action(row[primaryKey])"></i>
+                            </template>
+                        </template>
+
+                        <!-- Nếu không phải cột chức năng -->
+                        <template v-else>
+                            {{ row[col.key] }}
+                        </template>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <p v-if="tablesConfig">Danh sách có {{ tablesConfig.length }} dữ liệu./.</p>
     </div>
 </template>
 
@@ -39,7 +47,11 @@
             tablesConfig: {
                 type: Array,
                 default: () => [],
+            },
+            primaryKey: {
+                type: String,
+                default: "id",
             }
-        }
-    }
+        },
+    };
 </script>

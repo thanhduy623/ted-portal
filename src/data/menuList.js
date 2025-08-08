@@ -27,5 +27,17 @@ export default [
         url: "/shift",
         icon: IconTeddy,
         permission: 'viewShift'
+    },
+    {
+        name: "Đặc quyền",
+        url: "/",
+        icon: IconTeddy,
+        permission: 'viewShift'
+    },
+    {
+        name: "Đăng xuất",
+        url: "/login",
+        icon: IconTeddy,
+        permission: 'viewShift'
     }
 ];

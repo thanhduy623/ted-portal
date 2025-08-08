@@ -43,10 +43,12 @@
                 <selectPosition v-model:modelField="teddyModel.position"
                     v-model:validateField="teddyValidate.position" />
             </div>
-            <!-- Thế hệ -->
+            <!-- Thế hệ và trạng thái -->
             <div class="flex-row-container">
                 <SelectGeneration v-model:modelField="teddyModel.generation"
                     v-model:validateField="teddyValidate.generation" />
+                <SelectTeddyStatus v-model:modelField="teddyModel.status"
+                    v-model:validateField="teddyValidate.status" />
             </div>
 
             <div class="flex-row-container right">
@@ -58,7 +60,9 @@
 </template>
 
 <script setup>
-    import { ref, computed } from 'vue'
+    import { ref, computed, watch } from 'vue'
+    import { useRoute } from 'vue-router'
+
     import { connectGAS } from '@/utils/connectGAS'
     import compTitlePage from '@/components/compTitlePage.vue'
 
@@ -73,11 +77,47 @@
     import SelectPosition from '@/components/select/SelectPosition.vue'
     import SelectGeneration from '@/components/select/SelectGeneration.vue'
     import SelectFaculty from '@/components/select/SelectFaculty.vue'
+    import SelectTeddyStatus from '@/components/select/SelectTeddyStatus.vue'
 
+    // Lấy route hiện tại
+    const route = useRoute()
 
-    const titlePage = "Thêm nhân sự"
+    // Dữ liệu ban đầu
+    const titlePage = "Thông tin nhân sự"
     const teddyModel = ref({})
     const teddyValidate = ref({})
+
+    // Log khi id thay đổi hoặc khi trang load lần đầu
+    watch(
+        () => route.params.id,
+        async (newId) => {
+            console.log('ID trên URL:', newId);
+            if (newId) {
+                try {
+                    // Gọi hàm connectGAS và đợi kết quả
+                    const response = await connectGAS("getTeddyByConditions", { idTeddy: newId });
+                    console.log('Kết quả từ GAS:', response.data);
+
+                    // KIỂM TRA: Dữ liệu trả về là một mảng, cần lấy phần tử đầu tiên
+                    // Sử dụng 'response.data[0]' để lấy đối tượng nhân sự từ mảng
+                    if (response.data && response.data.length > 0) {
+                        teddyModel.value = response.data[0];
+                        console.log('Dữ liệu nhân sự đã tải:', teddyModel.value);
+                    } else {
+                        console.warn("Không tìm thấy dữ liệu cho ID này.");
+                        teddyModel.value = {};
+                    }
+                } catch (error) {
+                    console.error("Có lỗi khi lấy dữ liệu từ Google Apps Script:", error);
+                }
+            } else {
+                // Xử lý trường hợp không có id, ví dụ: reset teddyModel
+                teddyModel.value = {};
+            }
+        },
+        { immediate: true }
+    );
+
 
     // Kiểm tra hợp lệ toàn form
     const isFormValid = computed(() =>
@@ -86,12 +126,12 @@
 
     // Submit form
     async function submitForm() {
-        await connectGAS('addTeddy', teddyModel.value);
-        cleanForm();
+        await connectGAS('addTeddy', teddyModel.value)
+        cleanForm()
     }
 
     async function cleanForm() {
         await new Promise(resolve => setTimeout(resolve, 2000))
-        window.location.reload();
+        window.location.reload()
     }
 </script>

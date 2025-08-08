@@ -16,12 +16,19 @@
                 <i class="bi bi-search"></i>
                 <span>Tìm kiếm</span>
             </button>
+
+            <button @click="loadMasterData()">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Làm mới</span>
+            </button>
         </div>
     </div>
 </template>
 
 
 <script>
+    import { loadMasterData } from '@/utils/sessionStore.js'
+
     export default {
         props: {
             titlePage: {
@@ -36,12 +43,23 @@
                 type: Boolean,
                 default: false
             }
-        }
+        },
+
+        methods: {
+            loadMasterData() {
+                loadMasterData();
+            }
+        },
     }
 </script>
 
 <style>
     .group-title {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: var(--theme-color-bg);
+
         display: flex;
         align-items: center;
         margin-bottom: 16px;

@@ -11,29 +11,38 @@ label {
     display: block;
 }
 
-input,
-select {
-    height: 42px;
-    width: 100%;
-
-    padding: 6px 10px;
-    border-radius: 10px;
-    font-size: var(--size-text-normal);
-    border: solid 2px var(--theme-color-gray);
-    margin-bottom: 16px;
-}
-
 form h1,
 h2,
 h3 {
     margin-bottom: 6px;
 }
 
-form .flex-row-container>input,
+
+
+/* NHÓM  */
+form .flex-row-container .input-error-group,
 select {
     flex: 0 1 calc(50% - 5px);
 }
 
 form>.group-button>button {
     margin-bottom: 0;
+}
+
+
+
+/* NHÓM INPUT, SELECT VÀ BÁO LỖI */
+.input-error-group {
+    margin-bottom: 10px;
+}
+
+.input-error-group>input,
+.input-error-group>select {
+    margin-bottom: 6px;
+}
+
+.input-error-group>.error {
+    height: 12px;
+    color: var(--theme-color-error);
+
 }
