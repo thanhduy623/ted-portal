@@ -54,7 +54,7 @@
     // Đồng bộ khi con thay đổi, validate + gửi data
     watch(internalValue, val => {
         const { isValid, message } = validateField(val)
-        errorMessage.value = touched.value ? message : ''
+        errorMessage.value = message
         updateProcessData(val, isValid)
     })
 
@@ -80,13 +80,17 @@
     function validateField(value) {
         const trimmedVal = value?.trim() || ''
 
-        if (isRequired.value && !trimmedVal) {
+        if (!isRequired.value) {
+            return { isValid: true, message: '' }
+        }
+
+        if (!trimmedVal) {
             return { isValid: false, message: 'Không được để trống' }
         }
 
         // Kiểm tra định dạng số điện thoại
         if (trimmedVal.length !== 8) {
-            return { isValid: false, false: 'Sai định dạng só điện thoại' }
+            return { isValid: false, message: 'Sai định dạng mã sinh viên' }
         }
 
         return { isValid: true, message: '' }

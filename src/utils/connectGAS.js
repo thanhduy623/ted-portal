@@ -12,7 +12,7 @@ import { sessionSet, sessionGet } from '@/utils/sessionStore';
  * @returns {Promise<object>} - Một Promise giải quyết bằng phản hồi JSON từ GAS.
  * @throws {Error} - Ném lỗi nếu yêu cầu không thành công hoặc phản hồi không hợp lệ.
  */
-export async function connectGAS(action, data) {
+export async function connectGAS(action, data, banned = true) {
     // URL của Google Apps Script Web App đã triển khai
     // Được đặt cứng ở đây để tập trung cấu hình
     console.clear()
@@ -27,8 +27,7 @@ export async function connectGAS(action, data) {
     };
 
     try {
-        eventBus.notify("success", "Đang kết nối dữ liệu");
-        eventBus.showLoading();
+        banned ? eventBus.showLoading() : eventBus.notify("success", "Đang kết nối dữ liệu");
 
         const response = await fetch(gasUrl, {
             method: 'POST',

@@ -28,3 +28,18 @@ export function sortData(data, keys, locale = 'vi') {
         return 0; // Bằng nhau
     });
 }
+
+
+/**
+ * Lọc mảng dữ liệu theo điều kiện
+ * @param {Array} data - Mảng dữ liệu cần lọc
+ * @param {Object} conditions - Các cặp key-value điều kiện lọc (phải khớp chính xác)
+ * @returns {Array} - Mảng đã lọc
+ */
+export function filterData(data, conditions = {}) {
+    if (!Array.isArray(data) || typeof conditions !== 'object') return data || [];
+
+    return data.filter(item => {
+        return Object.entries(conditions).every(([key, value]) => item?.[key] === value);
+    });
+}

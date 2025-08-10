@@ -1,7 +1,10 @@
 <template>
     <div class="input-error-group">
-        <label v-if="labelName">{{labelName}}</label>
-        <input v-model="internalValue" :placeholder="placeholderText" v-bind="$attrs" @blur="touched = true" />
+        <label>{{labelName || "Nhân sự"}}</label>
+        <select v-model="internalValue" v-bind="$attrs" @blur="touched = true">
+            <option value="" disabled>Chọn nhân sự</option>
+            <option v-for="(item, index) in options" :value="item[fieldKey]">{{item[fieldData]}}</option>
+        </select>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>
@@ -9,16 +12,31 @@
 
 <script setup>
     import { ref, watch, onMounted, computed, useAttrs, toRaw } from 'vue'
+    import { sessionGet } from '@/utils/sessionStore'
+    import { sortData, filterData } from '@/utils/setupData'
 
     const props = defineProps({
         processData: Object,
         fieldName: String,
-        labelName: String
+        labelName: String,
+        idTeamFilter: String,
     })
 
 
+    // Gán 2 trường dữ liệu và gọi danh sách
+    const fieldKey = 'idTeddy'
+    const fieldData = 'fullName'
+    const options =
+        sortData(
+            filterData(
+                sessionGet("masterData").activeTeddyList,
+                { idTeam: props.idTeamFilter || "PD" }
+            ),
+            ["firstName"]
+        ) || [];
+
+
     // Gán dữ liệu ban đầu và báo lỗi
-    const placeholderText = 'Nhập ' + (props.labelName?.toLowerCase() || 'dữ liệu...')
     const internalValue = ref(props.processData?.inputData?.[props.fieldName] || '')
     const errorMessage = ref('')
     const touched = ref(false)
@@ -59,12 +77,11 @@
     })
 
 
-    // Khởi tạo và xử lý dữ liệu ban đầu
-    onMounted(() => {
-        const val = props.processData.inputData[props.fieldName] || '';
-        const isValid = !isRequired.value;
-        updateProcessData(val, isValid)
-    });
+    // HÀM: Lấy giá trị theo key được chọn
+    function dataMatchKey(key) {
+        const selectedItem = options.find(o => o[fieldKey] === key)
+        return selectedItem ? selectedItem[fieldData] : ''
+    }
 
 
     // Lấy giá trị cũ và cập nhật mới
@@ -72,28 +89,24 @@
         const newData = { ...props.processData };
         newData.inputData[props.fieldName] = val;
         newData.validateData[props.fieldName] = isValid;
+        newData.extraData[fieldData] = dataMatchKey(val);
         emit('update:processData', newData);
     }
 
 
     // Xác thực dữ liệu và trả về
     function validateField(value) {
-        const trimmedVal = value?.trim() || ''
-
+        // Nếu không bắt buộc thì luôn hợp lệ
         if (!isRequired.value) {
             return { isValid: true, message: '' }
         }
 
-        if (!trimmedVal) {
-            return { isValid: false, message: 'Không được để trống' }
+        // Nếu bắt buộc, kiểm tra giá trị đã chọn
+        if (value === '' || value === null || value === undefined) {
+            return { isValid: false, message: 'Vui lòng chọn dữ liệu' }
         }
-
-        // Kiểm tra định dạng số điện thoại
-        if (!/^0\d{9}$/.test(trimmedVal)) {
-            return { isValid: false, message: 'Sai định dạng số điện thoại' }
-        }
-
 
         return { isValid: true, message: '' }
     }
+
 </script>

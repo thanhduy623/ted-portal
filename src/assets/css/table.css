@@ -29,5 +29,5 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-    background-color: var(--theme-color-5);
+    background-color: #34699a63;
 }

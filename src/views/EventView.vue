@@ -48,9 +48,10 @@
     // Columns
     const columnsConfig = [
         { label: 'Mã sự kiện', key: 'idEvent' },
-        { label: 'Năm sự kiện', key: 'idSchoolYear' },
-        { label: 'Tên sự kiện', key: 'nameEvent' },
-        { label: 'Trạng thái', key: 'status' },
+        { label: 'Năm sự kiện', key: 'nameSchoolYear' },
+        { label: 'Tên sự kiện', key: 'eventName' },
+        { label: 'Trạng thái', key: 'statusEvent' },
+        { label: 'PD hỗ trợ', key: 'fullName' },
         {
             label: 'Chức năng',
             key: 'actions',

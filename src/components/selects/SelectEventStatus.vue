@@ -1,7 +1,10 @@
 <template>
     <div class="input-error-group">
-        <label v-if="labelName">{{labelName}}</label>
-        <input v-model="internalValue" :placeholder="placeholderText" v-bind="$attrs" @blur="touched = true" />
+        <label>Trạng thái sự kiện</label>
+        <select v-model="internalValue" v-bind="$attrs" @blur="touched = true">
+            <option value="" disabled>Chọn trạng thái</option>
+            <option v-for="(item, index) in options" :value="item[fieldKey]">{{item[fieldData]}}</option>
+        </select>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>
@@ -9,6 +12,7 @@
 
 <script setup>
     import { ref, watch, onMounted, computed, useAttrs, toRaw } from 'vue'
+    import { sessionGet } from '@/utils/sessionStore'
 
     const props = defineProps({
         processData: Object,
@@ -17,8 +21,19 @@
     })
 
 
+    // Gán 2 trường dữ liệu và gọi danh sách
+    const fieldKey = 'key'
+    const fieldData = 'statusEvent'
+    const options = [
+        { key: "Chưa hoạt động", statusEvent: "Chưa hoạt động" },
+        { key: "Đang hoạt động", statusEvent: "Đang hoạt động" },
+        { key: "Đã kết thúc", statusEvent: "Đã kết thúc" },
+        { key: "Tạm dừng", statusEvent: "Tạm dừng" },
+        { key: "Hủy", statusEvent: "Hủy" },
+    ]
+
+
     // Gán dữ liệu ban đầu và báo lỗi
-    const placeholderText = 'Nhập ' + (props.labelName?.toLowerCase() || 'dữ liệu...')
     const internalValue = ref(props.processData?.inputData?.[props.fieldName] || '')
     const errorMessage = ref('')
     const touched = ref(false)
@@ -50,7 +65,6 @@
     )
 
 
-
     // Đồng bộ khi con thay đổi, validate + gửi data
     watch(internalValue, val => {
         const { isValid, message } = validateField(val)
@@ -59,12 +73,11 @@
     })
 
 
-    // Khởi tạo và xử lý dữ liệu ban đầu
-    onMounted(() => {
-        const val = props.processData.inputData[props.fieldName] || '';
-        const isValid = !isRequired.value;
-        updateProcessData(val, isValid)
-    });
+    // HÀM: Lấy giá trị theo key được chọn
+    function dataMatchKey(key) {
+        const selectedItem = options.find(o => o[fieldKey] === key)
+        return selectedItem ? selectedItem[fieldData] : ''
+    }
 
 
     // Lấy giá trị cũ và cập nhật mới
@@ -78,22 +91,17 @@
 
     // Xác thực dữ liệu và trả về
     function validateField(value) {
-        const trimmedVal = value?.trim() || ''
-
+        // Nếu không bắt buộc thì luôn hợp lệ
         if (!isRequired.value) {
             return { isValid: true, message: '' }
         }
 
-        if (!trimmedVal) {
-            return { isValid: false, message: 'Không được để trống' }
+        // Nếu bắt buộc, kiểm tra giá trị đã chọn
+        if (value === '' || value === null || value === undefined) {
+            return { isValid: false, message: 'Vui lòng chọn dữ liệu' }
         }
-
-        // Kiểm tra định dạng số điện thoại
-        if (!/^0\d{9}$/.test(trimmedVal)) {
-            return { isValid: false, message: 'Sai định dạng số điện thoại' }
-        }
-
 
         return { isValid: true, message: '' }
     }
+
 </script>
