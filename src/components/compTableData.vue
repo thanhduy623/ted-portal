@@ -22,7 +22,7 @@
                             <div class="action-cell">
                                 <template v-for="(action, i) in col.actions" :key="i">
                                     <i v-if="action.show == null || action.show" :class="action.icon"
-                                        :title="action.label" @click="action.action(row[primaryKey])"></i>
+                                        :title="action.label" @click="action.action(row)"></i>
                                 </template>
 
                             </div>
@@ -62,10 +62,6 @@
                 type: Array,
                 default: () => [],
             },
-            primaryKey: {
-                type: String,
-                default: "id",
-            },
         },
         data() {
             return {
@@ -92,10 +88,11 @@
 
 <style scoped>
     .action-cell {
+        font-size: 18px;
         align-items: center;
         justify-content: center;
         display: flex;
-        gap: 10px;
+        gap: 6px;
     }
 
     .footer-table {

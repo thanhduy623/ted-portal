@@ -5,7 +5,7 @@
 
 
         <!-- Component bảng để hiển thị dữ liệu -->
-        <compTableData :columnsConfig="columnsConfig" :tablesConfig="tablesConfig" primaryKey="idTeddy" />
+        <compTableData :columnsConfig="columnsConfig" :tablesConfig="tablesConfig" />
     </div>
 </template>
 
@@ -28,26 +28,13 @@
     const tablesConfig = ref(null)
 
     // Actions cho bảng
-    const handleViewTeddy = (id) => {
-        router.push('/teddy/edit/' + id)
+    const handleViewTeddy = (data) => {
+        router.push('/teddy/edit/' + data.idTeddy)
     }
 
-    const handleAction = (id) => {
-        alert(id)
+    const handleAction = (data) => {
+        alert(data.idTeddy)
     }
-
-    const actionsConfig = [
-        {
-            icon: 'fas fa-edit',
-            label: 'Sửa',
-            action: '/teddy/edit/:id'
-        },
-        {
-            icon: 'fas fa-eye',
-            label: 'Xem',
-            action: handleAction
-        }
-    ]
 
     // Columns
     const columnsConfig = [
@@ -60,8 +47,9 @@
             label: 'Chức năng',
             key: 'actions',
             actions: [
-                { icon: 'fas fa-edit', label: 'Sửa', action: handleViewTeddy },
-                { icon: 'fas fa-eye', label: 'Xem', action: handleAction }
+                { label: 'Xem thông tin', icon: 'fas fa-eye', action: handleViewTeddy },
+                { label: 'Khóa tài khoản', icon: 'bi bi-lock-fill', action: handleAction },
+                { label: 'Khôi phục mật khẩu', icon: 'bi bi-rocket-fill', action: handleAction }
             ]
         }
     ]

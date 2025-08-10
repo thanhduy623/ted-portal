@@ -49,7 +49,7 @@
     function validate() {
         let isValid = true
 
-        if (!internalValue.value?.trim()) {
+        if (props.required && !internalValue.value?.trim()) {
             isValid = false
             errorMessage.value = 'Không được để trống'
         } else if (internalValue.value.length !== 8) {

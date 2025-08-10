@@ -50,7 +50,7 @@
         let isValid = true
         const val = internalValue.value?.trim() || ''
 
-        if (!val) {
+        if (props.required && !val) {
             isValid = false
             errorMessage.value = 'Không được để trống'
         } else if (!/^0\d{9}$/.test(val)) {

@@ -1,74 +1,72 @@
 <template>
     <div class="input-error-group">
-        <input v-model="internalValue" :placeholder="placeholder" :required="required" @blur="validate" v-bind="$attrs"
-            type="date" />
+        <input v-model="internalValue" :placeholder="placeholder" :required="isRequired" type="date" v-bind="$attrs" />
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>
 
 <script setup>
-    import { ref, watch, onMounted } from 'vue'
+    import { ref, watch, onMounted, computed, useAttrs, toRaw } from 'vue'
 
-    // Props
     const props = defineProps({
-        modelField: String,
-        validateField: Boolean,
-        placeholder: String,
-        required: Boolean
+        processData: Object,
+        fieldName: String,
+        placeholder: String
     })
 
-    // Emits
-    const emit = defineEmits(['update:modelField', 'update:validateField'])
+    const emit = defineEmits(['update:processData'])
+    const attrs = useAttrs()
+    const isRequired = computed(() => 'required' in attrs)
 
-    // Nội bộ
-    const internalValue = ref(props.modelField)
+    const internalValue = ref(props.processData?.inputData?.[props.fieldName] || '')
     const errorMessage = ref('')
 
-    // Đồng bộ từ cha
-    watch(() => props.modelField, val => {
-        internalValue.value = val
-    })
-
-    // Đồng bộ lên cha + validate
-    watch(internalValue, val => {
-        emit('update:modelField', val)
-        validate()
-    })
-
-    // Đồng bộ validate từ cha
-    watch(() => props.validateField, val => {
-        errorMessage.value = val || !props.required ? '' : 'Không được để trống'
-    })
-
-    // onMounted: nếu không required thì valid mặc định
-    onMounted(() => {
-        if (!props.modelField) {
-            if (props.required) {
-                const today = new Date()
-                const yyyy = today.getFullYear()
-                const mm = String(today.getMonth() + 1).padStart(2, '0')
-                const dd = String(today.getDate()).padStart(2, '0')
-                internalValue.value = `${yyyy}-${mm}-${dd}`
-
-                emit('update:modelField', internalValue.value)
-            } else {
-                internalValue.value = ''  // hoặc null
-                emit('update:modelField', '') // hoặc không emit gì cả nếu muốn cha rỗng hoàn toàn
-            }
+    // --- Validate function ---
+    function validateField(value) {
+        const trimmedVal = value?.trim() || ''
+        if (isRequired.value && !trimmedVal) {
+            return { isValid: false, message: 'Không được để trống' }
         }
-
-        emit('update:validateField', !props.required)
-    })
-
-
-    // Hàm kiểm tra hợp lệ
-    function validate() {
-        const isValid = props.required
-            ? internalValue.value?.trim() !== ''
-            : true
-
-        errorMessage.value = isValid || !props.required ? '' : 'Không được để trống'
-        emit('update:validateField', isValid)
+        return { isValid: true, message: '' }
     }
 
+    // --- Đồng bộ lên cha ---
+    function syncToParent(showError = true) {
+        const { isValid, message } = validateField(internalValue.value)
+        errorMessage.value = showError ? message : ''
+
+        const newData = structuredClone(toRaw(props.processData || {}))
+        if (!newData.inputData) newData.inputData = {}
+        if (!newData.validateData) newData.validateData = {}
+
+        newData.inputData[props.fieldName] = internalValue.value
+        newData.validateData[props.fieldName] = isValid
+
+        emit('update:processData', newData)
+    }
+
+    // --- Cha thay đổi giá trị ---
+    watch(
+        () => props.processData?.inputData?.[props.fieldName],
+        val => (internalValue.value = val ?? '')
+    )
+
+    // --- Con thay đổi ---
+    watch(internalValue, () => {
+        syncToParent(true) // hiện lỗi khi user gõ
+    })
+
+    // --- Lần mount ---
+    onMounted(() => {
+        // Nếu cha chưa có giá trị và required => gán mặc định
+        if (!internalValue.value && isRequired.value) {
+            const today = new Date()
+            const yyyy = today.getFullYear()
+            const mm = String(today.getMonth() + 1).padStart(2, '0')
+            const dd = String(today.getDate()).padStart(2, '0')
+            internalValue.value = `${yyyy}-${mm}-${dd}`
+        }
+        // Sync nhưng không show lỗi lần đầu
+        syncToParent(false)
+    })
 </script>

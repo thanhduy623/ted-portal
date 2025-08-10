@@ -7,6 +7,11 @@ import IconTeddy from '@/assets/picture/ic-menu-teddy.png';
 
 export default [
     {
+        name: "Thông báo",
+        url: "/",
+        icon: IconTeddy,
+    },
+    {
         name: "Nhân sự",
         url: "/teddy",
         icon: IconTeddy,
@@ -17,16 +22,21 @@ export default [
         icon: IconTeddy,
     },
     {
-        name: "Ghi nhận lỗi",
-        url: "/mistake",
+        name: "Sự kiện",
+        url: "/",
         icon: IconTeddy,
-        permission: 'viewMistake'
     },
     {
-        name: "Ghi ca chạy",
+        name: "Ca chạy",
         url: "/shift",
         icon: IconTeddy,
         permission: 'viewShift'
+    },
+    {
+        name: "Vi phạm",
+        url: "/mistake",
+        icon: IconTeddy,
+        permission: 'viewMistake'
     },
     {
         name: "Đặc quyền",

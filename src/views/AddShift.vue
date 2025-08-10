@@ -1,6 +1,6 @@
 <template lang="">
     <div>
-        <h1>UPDATE TEDDY</h1>
+        <h1>ADD SHFIT</h1>
     </div>
 </template>
 <script>

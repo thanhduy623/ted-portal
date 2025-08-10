@@ -5,7 +5,7 @@
 
 
         <!-- Component bảng để hiển thị dữ liệu -->
-        <compTableData :columnsConfig="columnsConfig" :tablesConfig="tablesConfig" primaryKey="idEvent" />
+        <compTableData :columnsConfig="columnsConfig" :tablesConfig="tablesConfig" />
     </div>
 </template>
 
@@ -28,27 +28,22 @@
     // State
     const tablesConfig = ref(null)
 
-    // Actions cho bảng
-    const handleViewTeddy = (id) => {
-        router.push('/event/edit/' + id)
+    // Action: Xem thông tin
+    const handleViewEvent = (data) => {
+        router.push('/event/edit/' + data.idEvent)
     }
 
-    const handleAction = (id) => {
-        alert(id)
+    // Action: Ghi nhận ca chạy
+    const handleViewShiftEvent = (data) => {
+        router.push({
+            path: '/shift/add/' + data.idEvent + "/" + data.nameEvent,
+            query: { name: data.eventName }
+        });
     }
 
-    const actionsConfig = [
-        {
-            icon: 'fas fa-edit',
-            label: 'Sửa',
-            action: '/teddy/edit/:id'
-        },
-        {
-            icon: 'fas fa-eye',
-            label: 'Xem',
-            action: handleAction
-        }
-    ]
+    const handleAction = (data) => {
+        alert(data.idEvent)
+    }
 
     // Columns
     const columnsConfig = [
@@ -60,8 +55,10 @@
             label: 'Chức năng',
             key: 'actions',
             actions: [
-                { icon: 'fas fa-edit', label: 'Sửa', action: handleViewTeddy },
-                { icon: 'fas fa-eye', label: 'Xem', action: handleAction }
+                { label: 'Xem thông tin', icon: 'bi bi-file-earmark-text-fill', action: handleViewEvent },
+                { label: 'Lập ban tổ chức', icon: 'bi bi-file-earmark-person-fill', action: handleAction },
+                { label: 'Ghi nhận ca chạy', icon: 'bi bi-file-earmark-plus-fill', action: handleViewShiftEvent },
+                { label: 'Ghi nhận vi phạm', icon: 'bi bi-file-earmark-check-fill', action: handleAction },
             ]
         }
     ]

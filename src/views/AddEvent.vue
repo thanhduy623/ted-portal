@@ -1,76 +1,13 @@
-<template>
+<template lang="">
     <div>
-        <compTitlePage :titlePage="titlePage" />
-        <form>
-            <h2>Thông tin chung</h2>
-            <!-- Năm học và phân loại -->
-            <div class="flex-row-container">
-                <selectYear v-model:modelField="dataModel.idSchoolYear"
-                    v-model:validateField="dataValidate.idSchoolYear" />
-
-                <SelectEventType v-model:modelField="dataModel.typeEvent"
-                    v-model:validateField="dataValidate.typeEvent" />
-            </div>
-            <!-- Tên sự kiện và tên tắt -->
-            <InputBase v-model:modelField="dataModel.nameEvent" v-model:validateField="dataValidate.nameEvent"
-                placeholder="Tên đầy đủ của sự kiện" :required="true" />
-            <hr>
-
-
-            <h2>Thời gian bắt đầu và kết thúc</h2>
-            <!-- Ngày bắt đầu và ngày kết thúc -->
-            <div class="flex-row-container">
-                <InputDate v-model:modelField="dataModel.startDate" v-model:validateField="dataValidate.startDate" />
-                <InputDate v-model:modelField="dataModel.endDate" v-model:validateField="dataValidate.endDate" />
-            </div>
-
-            <!-- Trạng thái và ghi chú -->
-            <div class="flex-row-container">
-                <SelectEventStatus v-model:modelField="dataModel.status" v-model:validateField="dataValidate.status" />
-                <InputBase v-model:modelField="dataModel.takeNote" v-model:validateField="dataValidate.takeNote"
-                    placeholder="Ghi chú" :required="false" />
-            </div>
-
-
-            <!-- Nhóm nút chức năng -->
-            <div class="flex-row-container right">
-                <button @click.prevent="cleanForm"> LÀM MỚI </button>
-                <button :disabled="!isFormValid" @click.prevent="submitForm" class="primary"> TẠO MỚI </button>
-            </div>
-        </form>
+        <h1>ADD EVENT</h1>
     </div>
 </template>
+<script>
+    export default {
 
-<script setup>
-    import { ref, computed } from 'vue'
-    import { connectGAS } from '@/utils/connectGAS'
-    import compTitlePage from '@/components/compTitlePage.vue'
-
-    import SelectYear from '@/components/select/SelectYear.vue'
-    import SelectEventType from '@/components/select/SelectEventType.vue'
-    import SelectEventStatus from '@/components/select/SelectEventStatus.vue'
-
-    import InputDate from '@/components/inputs/InputDate.vue'
-    import InputBase from '@/components/inputs/InputBase.vue'
-
-
-    const titlePage = "Thêm sự kiện năm học"
-    const dataModel = ref({})
-    const dataValidate = ref({})
-
-    // Kiểm tra hợp lệ toàn form
-    const isFormValid = computed(() =>
-        Object.values(dataValidate.value).every(v => v === true)
-    )
-
-    // Submit form
-    async function submitForm() {
-        await connectGAS('addEvent', dataModel.value);
-        cleanForm();
-    }
-
-    async function cleanForm() {
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        window.location.reload();
     }
 </script>
+<style lang="">
+
+</style>

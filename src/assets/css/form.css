@@ -5,6 +5,7 @@ form {
 }
 
 label {
+    width: 100%;
     font-style: italic;
     padding-left: 6px;
     margin-bottom: 3px;
