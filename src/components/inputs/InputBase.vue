@@ -1,7 +1,7 @@
 <template>
     <div class="input-error-group">
-        <label>ahehe</label>
-        <input v-model="internalValue" :placeholder="placeholder" v-bind="$attrs" @blur="touched = true" />
+        <label v-if="labelName">{{labelName}}</label>
+        <input v-model="internalValue" :placeholder="placeholderText" v-bind="$attrs" @blur="touched = true" />
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>
@@ -13,11 +13,12 @@
     const props = defineProps({
         processData: Object,
         fieldName: String,
-        placeholder: String
+        labelName: String
     })
 
 
     // Gán dữ liệu ban đầu và báo lỗi
+    const placeholderText = 'Nhập ' + (props.labelName?.toLowerCase() || 'dữ liệu...')
     const internalValue = ref(props.processData?.inputData?.[props.fieldName] || '')
     const errorMessage = ref('')
     const touched = ref(false)
@@ -54,7 +55,7 @@
     watch(internalValue, val => {
         const { isValid, message } = validateField(val)
         errorMessage.value = touched.value ? message : ''
-        updateProcessData(val, isValid.value)
+        updateProcessData(val, isValid)
     })
 
 
@@ -65,6 +66,8 @@
         updateProcessData(val, isValid)
     });
 
+
+    // Lấy giá trị cũ và cập nhật mới
     function updateProcessData(val, isValid) {
         const newData = { ...props.processData };
         newData.inputData[props.fieldName] = val;

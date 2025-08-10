@@ -1,9 +1,12 @@
 <template>
     <div class="input-error-group">
-        <input v-model="internalValue" :placeholder="placeholder" :required="isRequired" type="date" v-bind="$attrs" />
+        <label v-if="labelName">{{labelName}}</label>
+        <input v-model="internalValue" :placeholder="placeholderText" v-bind="$attrs" @blur="touched = true"
+            type="date" />
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>
+
 
 <script setup>
     import { ref, watch, onMounted, computed, useAttrs, toRaw } from 'vue'
@@ -11,62 +14,77 @@
     const props = defineProps({
         processData: Object,
         fieldName: String,
-        placeholder: String
+        labelName: String
     })
 
-    const emit = defineEmits(['update:processData'])
-    const attrs = useAttrs()
-    const isRequired = computed(() => 'required' in attrs)
 
+    // Gán dữ liệu ban đầu và báo lỗi
+    const placeholderText = 'Nhập ' + (props.labelName?.toLowerCase() || 'dữ liệu...')
     const internalValue = ref(props.processData?.inputData?.[props.fieldName] || '')
     const errorMessage = ref('')
+    const touched = ref(false)
 
-    // --- Validate function ---
-    function validateField(value) {
-        const trimmedVal = value?.trim() || ''
-        if (isRequired.value && !trimmedVal) {
-            return { isValid: false, message: 'Không được để trống' }
+
+    // Xử lý sự kiện
+    const attrs = useAttrs()
+    const isRequired = computed(() => 'required' in attrs)
+    const emit = defineEmits(['update:processData'])
+
+
+    // Đồng bộ khi cha gửi form
+    watch(
+        () => props.processData?.isFormSubmitted,
+        (isSubmitted) => {
+            if (isSubmitted) {
+                const { isValid, message } = validateField(internalValue.value);
+                errorMessage.value = message;
+                updateProcessData(internalValue.value, isValid);
+            }
         }
-        return { isValid: true, message: '' }
-    }
+    );
 
-    // --- Đồng bộ lên cha ---
-    function syncToParent(showError = true) {
-        const { isValid, message } = validateField(internalValue.value)
-        errorMessage.value = showError ? message : ''
 
-        const newData = structuredClone(toRaw(props.processData || {}))
-        if (!newData.inputData) newData.inputData = {}
-        if (!newData.validateData) newData.validateData = {}
-
-        newData.inputData[props.fieldName] = internalValue.value
-        newData.validateData[props.fieldName] = isValid
-
-        emit('update:processData', newData)
-    }
-
-    // --- Cha thay đổi giá trị ---
+    // Đồng bộ khi cha thay đổi
     watch(
         () => props.processData?.inputData?.[props.fieldName],
         val => (internalValue.value = val ?? '')
     )
 
-    // --- Con thay đổi ---
-    watch(internalValue, () => {
-        syncToParent(true) // hiện lỗi khi user gõ
+
+
+    // Đồng bộ khi con thay đổi, validate + gửi data
+    watch(internalValue, val => {
+        const { isValid, message } = validateField(val)
+        errorMessage.value = touched.value ? message : ''
+        updateProcessData(val, isValid)
     })
 
-    // --- Lần mount ---
+
+    // Khởi tạo và xử lý dữ liệu ban đầu
     onMounted(() => {
-        // Nếu cha chưa có giá trị và required => gán mặc định
-        if (!internalValue.value && isRequired.value) {
-            const today = new Date()
-            const yyyy = today.getFullYear()
-            const mm = String(today.getMonth() + 1).padStart(2, '0')
-            const dd = String(today.getDate()).padStart(2, '0')
-            internalValue.value = `${yyyy}-${mm}-${dd}`
+        const val = props.processData.inputData[props.fieldName] || '';
+        const isValid = !isRequired.value;
+        updateProcessData(val, isValid)
+    });
+
+
+    // Lấy giá trị cũ và cập nhật mới
+    function updateProcessData(val, isValid) {
+        const newData = { ...props.processData };
+        newData.inputData[props.fieldName] = val;
+        newData.validateData[props.fieldName] = isValid;
+        emit('update:processData', newData);
+    }
+
+
+    // Xác thực dữ liệu và trả về
+    function validateField(value) {
+        const trimmedVal = value?.trim() || ''
+
+        if (isRequired.value && !trimmedVal) {
+            return { isValid: false, message: 'Không được để trống' }
         }
-        // Sync nhưng không show lỗi lần đầu
-        syncToParent(false)
-    })
+
+        return { isValid: true, message: '' }
+    }
 </script>

@@ -1,65 +1,94 @@
 <template>
     <div class="input-error-group">
-        <input v-model="internalValue" :placeholder="placeholder" :required="required" @blur="validate" v-bind="$attrs"
-            type="text" maxlength="8" />
+        <label v-if="labelName">{{labelName}}</label>
+        <input v-model="internalValue" :placeholder="placeholderText" v-bind="$attrs" @blur="touched = true" />
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
 </template>
 
+
 <script setup>
-    import { ref, watch, onMounted } from 'vue'
+    import { ref, watch, onMounted, computed, useAttrs, toRaw } from 'vue'
 
-    // Props
     const props = defineProps({
-        modelField: String,
-        validateField: Boolean,
-        placeholder: String,
-        required: Boolean
+        processData: Object,
+        fieldName: String,
+        labelName: String
     })
 
-    // Emits
-    const emit = defineEmits(['update:modelField', 'update:validateField'])
 
-    // Nội bộ
-    const internalValue = ref(props.modelField)
+    // Gán dữ liệu ban đầu và báo lỗi
+    const placeholderText = 'Nhập ' + (props.labelName?.toLowerCase() || 'dữ liệu...')
+    const internalValue = ref(props.processData?.inputData?.[props.fieldName] || '')
     const errorMessage = ref('')
+    const touched = ref(false)
 
-    // Đồng bộ từ cha
-    watch(() => props.modelField, val => {
-        internalValue.value = val
-    })
 
-    // Đồng bộ lên cha + validate
+    // Xử lý sự kiện
+    const attrs = useAttrs()
+    const isRequired = computed(() => 'required' in attrs)
+    const emit = defineEmits(['update:processData'])
+
+
+    // Đồng bộ khi cha gửi form
+    watch(
+        () => props.processData?.isFormSubmitted,
+        (isSubmitted) => {
+            if (isSubmitted) {
+                const { isValid, message } = validateField(internalValue.value);
+                errorMessage.value = message;
+                updateProcessData(internalValue.value, isValid);
+            }
+        }
+    );
+
+
+    // Đồng bộ khi cha thay đổi
+    watch(
+        () => props.processData?.inputData?.[props.fieldName],
+        val => (internalValue.value = val ?? '')
+    )
+
+
+
+    // Đồng bộ khi con thay đổi, validate + gửi data
     watch(internalValue, val => {
-        emit('update:modelField', val)
-        validate()
+        const { isValid, message } = validateField(val)
+        errorMessage.value = touched.value ? message : ''
+        updateProcessData(val, isValid)
     })
 
-    // Đồng bộ validate từ cha
-    watch(() => props.validateField, val => {
-        errorMessage.value = val || !props.required ? '' : 'Không được để trống'
-    })
 
-    // onMounted: nếu không required thì valid mặc định
+    // Khởi tạo và xử lý dữ liệu ban đầu
     onMounted(() => {
-        emit('update:validateField', !props.required)
-    })
+        const val = props.processData.inputData[props.fieldName] || '';
+        const isValid = !isRequired.value;
+        updateProcessData(val, isValid)
+    });
 
-    // Hàm kiểm tra hợp lệ
-    function validate() {
-        let isValid = true
 
-        if (props.required && !internalValue.value?.trim()) {
-            isValid = false
-            errorMessage.value = 'Không được để trống'
-        } else if (internalValue.value.length !== 8) {
-            isValid = false
-            errorMessage.value = 'MSSV phải có 8 ký tự'
-        } else {
-            errorMessage.value = ''
+    // Lấy giá trị cũ và cập nhật mới
+    function updateProcessData(val, isValid) {
+        const newData = { ...props.processData };
+        newData.inputData[props.fieldName] = val;
+        newData.validateData[props.fieldName] = isValid;
+        emit('update:processData', newData);
+    }
+
+
+    // Xác thực dữ liệu và trả về
+    function validateField(value) {
+        const trimmedVal = value?.trim() || ''
+
+        if (isRequired.value && !trimmedVal) {
+            return { isValid: false, message: 'Không được để trống' }
         }
 
+        // Kiểm tra định dạng số điện thoại
+        if (trimmedVal.length !== 8) {
+            return { isValid: false, false: 'Sai định dạng só điện thoại' }
+        }
 
-        emit('update:validateField', isValid)
+        return { isValid: true, message: '' }
     }
 </script>
