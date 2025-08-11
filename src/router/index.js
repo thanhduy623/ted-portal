@@ -1,28 +1,34 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { sessionGet } from '@/utils/sessionStore'
 
+// Layout
 import defaultLayout from '@/layouts/defaultLayout.vue'
+import AuthLayout from '@/layouts/authLayout.vue'
 
+// Home + auth
 import HomePage from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+
 
 import YearView from '@/views/YearView.vue'
 import GenerationView from '@/views/GenerationView.vue'
 
-import TeddyView from '@/views/TeddyView.vue'
-import AddTeddy from '@/views/AddTeddy.vue'
-import UpdateTeddy from '@/views/UpdateTeddy.vue'
+// Teddy
+import TeddyView from '@/views/teddy/TeddyView.vue'
+import AddTeddy from '@/views/teddy/AddTeddy.vue'
+import UpdateTeddy from '@/views/teddy/UpdateTeddy.vue'
 
-import EventView from '@/views/EventView.vue'
-import AddEvent from '@/views/AddEvent.vue'
-import UpdateEvent from '@/views/UpdateEvent.vue'
+// Event
+import EventView from '@/views/event/EventView.vue'
+import AddEvent from '@/views/event/AddEvent.vue'
+import UpdateEvent from '@/views/event/UpdateEvent.vue'
 
-import MistakeView from '@/views/MistakeView.vue'
+// Mistake
+import MistakeView from '@/views/mistake/MistakeView.vue'
 
-import ShiftView from '@/views/ShiftView.vue'
-import AddShift from '@/views/AddShift.vue'
-
-import AuthLayout from '@/layouts/authLayout.vue'
+// Shift
+import ShiftView from '@/views/shift/ShiftView.vue'
+import AddShift from '@/views/shift/AddShift.vue'
 
 
 const routes = [

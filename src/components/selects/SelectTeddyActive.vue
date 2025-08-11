@@ -13,19 +13,33 @@
 <script setup>
     import { ref, watch, onMounted, computed, useAttrs, toRaw } from 'vue'
     import { sessionGet } from '@/utils/sessionStore'
-    import { sortData } from '@/utils/setupData'
+    import { sortData, filterData } from '@/utils/setupData'
 
     const props = defineProps({
         processData: Object,
         fieldName: String,
-        labelName: String
+        labelName: String,
+        idTeamFilter: String,
     })
 
 
     // Gán 2 trường dữ liệu và gọi danh sách
     const fieldKey = 'idTeddy'
     const fieldData = 'fullName'
-    const options = sortData(sessionGet("masterData").activeTeddyList, ["firstName"]) || []
+    const options = computed(() => {
+        // Lấy dữ liệu từ masterData và xử lý trường hợp null/undefined
+        const activeTeddyList = sessionGet("masterData")?.activeTeddyList || [];
+
+        // Nếu có idTeamFilter, thực hiện filter trước
+        if (props.idTeamFilter) {
+            const filteredData = filterData(activeTeddyList, { idTeam: props.idTeamFilter });
+            return sortData(filteredData, ["firstName"]) || [];
+        }
+        // Ngược lại, chỉ sort dữ liệu
+        else {
+            return sortData(activeTeddyList, ["firstName"]) || [];
+        }
+    });
 
 
     // Gán dữ liệu ban đầu và báo lỗi

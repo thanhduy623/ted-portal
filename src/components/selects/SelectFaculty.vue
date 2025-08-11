@@ -22,7 +22,7 @@
 
 
     // Gán 2 trường dữ liệu và gọi danh sách
-    const fieldKey = 'key'
+    const fieldKey = 'studentFaculty'
     const fieldData = 'studentFaculty'
     const options = sessionGet("masterData")?.facultyList || []
 

@@ -1,4 +1,4 @@
-function lockForm(formSelector = 'form') {
+export function lockForm(formSelector = 'form') {
     const form = document.querySelector(formSelector)
     if (!form) return
 
@@ -10,7 +10,7 @@ function lockForm(formSelector = 'form') {
     })
 }
 
-function unlockForm(formSelector = 'form') {
+export function unlockForm(formSelector = 'form') {
     const form = document.querySelector(formSelector)
     if (!form) return
 

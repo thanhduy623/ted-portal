@@ -45,7 +45,7 @@
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
-                <button type="reset">LÀM MỚI</button>
+                <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
                 <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
             </div>
         </form>
@@ -95,6 +95,12 @@
             Object.values(validateData).every(v => v === true)
     })
 
+    // HÀM: Làm mới form
+    function cleanForm() {
+        processData.value.inputData = {}
+    }
+
+    // HÀM: Gửi form
     async function submitForm() {
         console.clear();
         processData.value.isFormSubmitted = true;

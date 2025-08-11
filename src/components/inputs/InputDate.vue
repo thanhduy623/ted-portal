@@ -1,6 +1,6 @@
 <template>
     <div class="input-error-group">
-        <label v-if="labelName">{{labelName}}</label>
+        <label v-if="labelName">{{labelName}} ({{detectBrowserDateFormat()}})</label>
         <input v-model="internalValue" :placeholder="placeholderText" v-bind="$attrs" @blur="touched = true"
             type="date" />
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
@@ -89,5 +89,19 @@
             return { isValid: false, message: 'Không được để trống' }
         }
         return { isValid: true, message: '' }
+    }
+
+
+    // Lấy mã định dạng ngày
+    function detectBrowserDateFormat() {
+        const parts = new Intl.DateTimeFormat().formatToParts();
+        return parts
+            .filter(p => p.type === 'day' || p.type === 'month' || p.type === 'year')
+            .map(p => {
+                if (p.type === 'day') return 'DD';
+                if (p.type === 'month') return 'MM';
+                if (p.type === 'year') return 'YYYY';
+            })
+            .join('/');
     }
 </script>

@@ -2,6 +2,23 @@
     <div>
         <compTitlePage :titlePage="titlePage" />
         <form>
+            <!-- Tên và mã sự kiện -->
+            <div class="flex-row-container">
+                <InputBase v-model:processData="processData" fieldName="nameEvent" labelName="Tên sự kiện" required
+                    disabled />
+                <InputBase v-model:processData="processData" fieldName="idEvent" labelName="Mã sự kiện" required
+                    disabled />
+            </div>
+
+            <!-- Tên và mã sự kiện -->
+            <div class="flex-row-container">
+                <SelectSchoolYear v-model:processData="processData" fieldName="idSchoolYear" required />
+                <InputDate v-model:processData="processData" fieldName="date" labelName="Ngày chạy" />
+            </div>
+
+
+
+
             <!-- Niên khóa, phân loại -->
             <div class="flex-row-container">
                 <SelectSchoolYear v-model:processData="processData" fieldName="idSchoolYear" required />
@@ -20,15 +37,15 @@
             <!-- Trạng thái, PD hỗ trợ -->
             <div class="flex-row-container">
                 <SelectEventStatus v-model:processData="processData" fieldName="statusEvent" required />
-                <SelectTeddyByTeam v-model:processData="processData" fieldName="idSuporter" labelName="PD hỗ trợ" />
+                <SelectTeddyActive v-model:processData="processData" fieldName="idSuporter" labelName="PD hỗ trợ" />
             </div>
 
-            <!-- Tên sự kiện -->
-            <InputBase v-model:processData="processData" fieldName="takeNote" labelName="Ghi chú" required />
+            <!-- Tên ghi chú -->
+            <InputBase v-model:processData="processData" fieldName="takeNote" labelName="Ghi chú" />
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
-                <button type="reset">LÀM MỚI</button>
+                <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
                 <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
             </div>
         </form>
@@ -48,7 +65,7 @@
     import SelectSchoolYear from '@/components/selects/SelectSchoolYear.vue'
     import SelectEventType from '@/components/selects/SelectEventType.vue'
     import SelectEventStatus from '@/components/selects/SelectEventStatus.vue'
-    import SelectTeddyByTeam from '@/components/selects/SelectTeddyByTeam.vue'
+    import SelectTeddyActive from '@/components/selects/SelectTeddyActive.vue'
 
 
     const titlePage = 'Thêm sự kiện'
@@ -75,6 +92,12 @@
             Object.values(validateData).every(v => v === true)
     })
 
+    // HÀM: Làm mới form
+    function cleanForm() {
+        processData.value.inputData = {}
+    }
+
+    // HÀM: Gửi form
     async function submitForm() {
         console.clear();
         processData.value.isFormSubmitted = true;
