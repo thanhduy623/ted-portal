@@ -1,0 +1,34 @@
+.input-error-group {
+    position: relative;
+}
+
+.optionList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #858585;
+    z-index: 10;
+
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.optionItem {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+    padding: 6px;
+}
+
+.optionItem>input {
+    height: 16px;
+    margin: 0;
+    flex: 0;
+}
+
+.optionItem>p {
+    font-style: normal !important;
+}
