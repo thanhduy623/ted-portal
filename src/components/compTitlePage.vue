@@ -11,12 +11,7 @@
                 </button>
             </RouterLink>
 
-            <!-- Button hiển thị SearchBox -->
-            <button>
-                <i class="bi bi-search"></i>
-                <span>Tìm kiếm</span>
-            </button>
-
+            <!-- Button Làm mới dữ liệu nền -->
             <button @click="loadMasterData()">
                 <i class="bi bi-arrow-clockwise"></i>
                 <span>Làm mới</span>

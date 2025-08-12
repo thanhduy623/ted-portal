@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-    import { ref, computed, onMounted, watch } from 'vue'
+    import { ref, computed, onMounted, watch, nextTick } from 'vue'
     import { useRouter, useRoute } from 'vue-router'
     import { connectGAS } from '@/utils/connectGAS'
     import { lockForm, unlockForm } from '@/utils/formLockUtils'
@@ -125,6 +125,7 @@
     async function submitForm() {
         console.clear();
         processData.value.isFormSubmitted = true;
+        await nextTick();
 
         if (isFormValid.value) {
             console.table(finalData.value)

@@ -33,10 +33,26 @@
         router.push('/event/edit/' + data.idEvent)
     }
 
-    // Action: Ghi nhận ca chạy
-    const handleViewShiftEvent = (data) => {
+    // Action: Thành lập ban tổ chức
+    const handleAddOrganizationEvent = (data) => {
         router.push({
-            path: '/shift/add/' + data.idEvent + "/" + data.nameEvent,
+            path: '/organization/add/' + data.idEvent,
+            query: { name: data.eventName }
+        });
+    }
+
+    // Action: Ghi nhận ca chạy
+    const handleAddShiftEvent = (data) => {
+        router.push({
+            path: '/shift/add/' + data.idEvent,
+            query: { name: data.eventName }
+        });
+    }
+
+    // Action: Ghi nhận ca chạy
+    const handleAddMistakeEvent = (data) => {
+        router.push({
+            path: '/mistake/add/' + data.idEvent,
             query: { name: data.eventName }
         });
     }
@@ -57,9 +73,9 @@
             key: 'actions',
             actions: [
                 { label: 'Xem thông tin', icon: 'bi bi-file-earmark-text-fill', action: handleViewEvent },
-                { label: 'Lập ban tổ chức', icon: 'bi bi-file-earmark-person-fill', action: handleAction },
-                { label: 'Ghi nhận ca chạy', icon: 'bi bi-file-earmark-plus-fill', action: handleViewShiftEvent },
-                { label: 'Ghi nhận vi phạm', icon: 'bi bi-file-earmark-check-fill', action: handleAction },
+                { label: 'Lập ban tổ chức', icon: 'bi bi-file-earmark-person-fill', action: handleAddOrganizationEvent },
+                { label: 'Ghi nhận ca chạy', icon: 'bi bi-file-earmark-plus-fill', action: handleAddShiftEvent },
+                { label: 'Ghi nhận vi phạm', icon: 'bi bi-file-earmark-check-fill', action: handleAddMistakeEvent },
             ]
         }
     ]

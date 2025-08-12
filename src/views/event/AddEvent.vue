@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-    import { ref, computed, onMounted } from 'vue'
+    import { ref, computed, onMounted, nextTick } from 'vue'
     import { useRouter, useRoute } from 'vue-router'
     import { connectGAS } from '@/utils/connectGAS'
 
@@ -85,8 +85,8 @@
     async function submitForm() {
         console.clear();
         processData.value.isFormSubmitted = true;
-        console.table(processData.value.validateData)
-        console.table(processData.value.finalData)
+        await nextTick();
+
         if (isFormValid.value) {
             console.table(finalData.value)
             processData.value.isFormSubmitted = false;

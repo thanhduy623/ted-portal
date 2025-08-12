@@ -52,7 +52,7 @@ export async function connectGAS(action, data, banned = true) {
         eventBus.notify(result.status, result.message);
         console.log(result)
 
-        if (result.message == "Token đã hết hạn" || result.message == "Thiếu token. Yêu cầu xác thực.") {
+        if (result.message == "Token đã hết hạn." || result.message == "Thiếu token. Yêu cầu xác thực.") {
             router.push("/login");
         }
 

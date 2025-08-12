@@ -16,15 +16,11 @@
                 <InputDate v-model:processData="processData" fieldName="date" labelName="Ngày chạy" required />
             </div>
 
-            <!-- Tên và mã sự kiện -->
+            <!-- Tên và mã lỗi -->
             <div class="flex-row-container">
                 <SelectTeddyActive v-model:processData="processData" fieldName="idTeddy" required />
-                <SelectShift v-model:processData="processData" fieldName="numberShift" required />
+                <SelectMistake v-model:processData="processData" fieldName="idMistake" required />
             </div>
-
-            <CheckShiftPostion v-model:processData="processData" fieldName="positionShift" labelName="Ví trí chạy"
-                required />
-
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
@@ -53,12 +49,10 @@
 
     import SelectSchoolYear from '@/components/selects/SelectSchoolYear.vue'
     import SelectTeddyActive from '@/components/selects/SelectTeddyActive.vue'
-    import SelectShift from '@/components/selects/SelectShift.vue'
-
-    import CheckShiftPostion from '@/components/checks/CheckShiftPostion.vue'
+    import SelectMistake from '@/components/selects/SelectMistake.vue'
 
 
-    const titlePage = 'Ghi nhận ca chạy'
+    const titlePage = 'Ghi nhận vi phạm'
 
     // Data tập trung
     const processData = ref({
@@ -86,9 +80,8 @@
 
     // HÀM: Làm mới form
     function cleanForm() {
-        processData.value.inputData.numberShift = '';
         processData.value.inputData.idTeddy = '';
-        processData.value.inputData.positionShift = '';
+        processData.value.inputData.idMistake = '';
     }
 
     // HÀM: Gửi form
@@ -101,7 +94,7 @@
             console.table(finalData.value)
             console.log(finalData.value);
             processData.value.isFormSubmitted = false;
-            const res = await connectGAS('addShift', finalData.value);
+            const res = await connectGAS('addMistake', finalData.value);
             if (!res.success) { return }
             tablesConfig.value = res.data?.reverse();
             cleanForm()
@@ -115,13 +108,13 @@
     *********************************************************************************/
 
     // HÀM: Xóa dữ liệu bảng
-    const deleteShift = async row => {
+    const deleteMistake = async row => {
         const isConfirmed = await eventBus.confirm(
-            `Bạn có chắc chắn muốn xóa ca chạy của "${row.fullName}" vào ngày ${row.date}?`,
+            `Bạn có chắc chắn muốn xóa lỗi của "${row.fullName}" vào ngày ${row.date}?`,
         );
 
         if (!isConfirmed) return;
-        const res = await connectGAS("deleteShift", row);
+        const res = await connectGAS("deleteMistake", row);
         res.success
             ? tablesConfig.value = tablesConfig.value.filter(i => !(i.idEvent === row.idEvent && i.idTeddy === row.idTeddy && i.date === row.date))
             : console.error(res.message || "Xóa thất bại");
@@ -131,7 +124,7 @@
     // DATA: Khởi tạo dữ liệu bảng
     const tablesConfig = ref([])
     onMounted(async () => {
-        const res = await connectGAS("getShiftByConditions", { idEvent: useRoute().params.id }, false)
+        const res = await connectGAS("getMistakeByConditions", { idEvent: useRoute().params.id }, false)
         if (res?.success && Array.isArray(res.data)) {
             tablesConfig.value = res.data
         }
@@ -143,12 +136,11 @@
         { label: 'Ngày chạy', key: 'date' },
         { label: 'Mã sinh viên', key: 'idTeddy' },
         { label: 'Họ và tên', key: 'fullName' },
-        { label: 'Số lượng', key: 'nameShift' },
-        { label: 'Vị trí', key: 'positionShift' },
+        { label: 'Lỗi vi phạm', key: 'nameMistake' },
         {
             label: 'Chức năng',
             key: 'actions',
-            actions: [{ label: 'Xóa ca chạy', icon: 'bi bi-trash3-fill', action: deleteShift },]
+            actions: [{ label: 'Xóa lỗi', icon: 'bi bi-trash3-fill', action: deleteMistake },]
         }
     ]
 </script>

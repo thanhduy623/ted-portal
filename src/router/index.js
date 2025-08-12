@@ -7,6 +7,7 @@ import AuthLayout from '@/layouts/authLayout.vue'
 
 // Home + auth
 import HomePage from '@/views/HomeView.vue'
+import NotFound from '@/views/NotFound.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 
 
@@ -23,12 +24,17 @@ import EventView from '@/views/event/EventView.vue'
 import AddEvent from '@/views/event/AddEvent.vue'
 import UpdateEvent from '@/views/event/UpdateEvent.vue'
 
+// Organnization
+import AddOrganization from '@/views/organization/AddOrganization.vue'
+
 // Mistake
-import MistakeView from '@/views/mistake/MistakeView.vue'
+import AddMistake from '@/views/mistake/AddMistake.vue'
 
 // Shift
-import ShiftView from '@/views/shift/ShiftView.vue'
 import AddShift from '@/views/shift/AddShift.vue'
+
+// Statistics
+import StatisticsView from '@/views/statistics/StatisticsView.vue'
 
 
 const routes = [
@@ -51,10 +57,13 @@ const routes = [
       { path: 'event/edit/:id', component: UpdateEvent },
       { path: 'shift/add/:id/:nameEvent', component: AddShift },
 
-      { path: 'mistake', component: MistakeView },
+      { path: 'organization/add/:id', component: AddOrganization },
 
-      { path: 'shift', component: ShiftView },
+      { path: 'mistake/add/:id', component: AddMistake },
+
       { path: 'shift/add/:id', component: AddShift },
+
+      { path: 'statistics', component: StatisticsView },
     ]
   },
   {
@@ -63,6 +72,10 @@ const routes = [
     children: [
       { path: '', component: LoginView }
     ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: NotFound
   }
 ]
 

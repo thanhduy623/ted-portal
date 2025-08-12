@@ -1,8 +1,8 @@
 <template>
     <div class="input-error-group">
-        <label>Số ca chạy</label>
+        <label>Vai trò trong ban</label>
         <select v-model="internalValue" v-bind="$attrs" @blur="touched = true">
-            <option value="" disabled>Chọn số ca chạy</option>
+            <option value="" disabled>Chọn vai trò</option>
             <option v-for="(item, index) in options" :value="item[fieldKey]">{{item[fieldData]}}</option>
         </select>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
@@ -23,15 +23,8 @@
 
     // Gán 2 trường dữ liệu và gọi danh sách
     const fieldKey = 'key'
-    const fieldData = 'statusEvent'
-    const options = [
-        { key: "1", statusEvent: "Chạy 1 ca" },
-        { key: "2", statusEvent: "Chạy 2 ca" },
-        { key: "3", statusEvent: "Chạy 3 ca" },
-        { key: "3", statusEvent: "Chạy 4 ca" },
-        { key: "5", statusEvent: "Chạy 5 ca" },
-        { key: "6", statusEvent: "Chạy 6 ca" },
-    ]
+    const fieldData = 'key'
+    const options = sessionGet("masterData")?.organizationPositionList || []
 
 
     // Gán dữ liệu ban đầu và báo lỗi
@@ -86,7 +79,6 @@
         const newData = { ...props.processData };
         newData.inputData[props.fieldName] = val;
         newData.validateData[props.fieldName] = isValid;
-        newData.extraData.nameShift = dataMatchKey(val);
         emit('update:processData', newData);
     }
 

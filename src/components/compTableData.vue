@@ -11,7 +11,8 @@
             <tbody>
                 <!-- CASE 1: KHÔNG CÓ DỮ LIỆU -->
                 <tr v-if="safeTablesConfig.length === 0">
-                    <td :colspan="columnsConfig.length">Không có dữ liệu</td>
+                    <td :colspan="(columnsConfig && columnsConfig.length) ? columnsConfig.length : 1"> Không có dữ liệu
+                    </td>
                 </tr>
 
                 <!-- CASE 2: CÓ DỮ LIỆU -->
@@ -56,17 +57,19 @@
         props: {
             columnsConfig: {
                 type: Array,
+                default: () => [],
                 required: true,
             },
             tablesConfig: {
                 type: Array,
                 default: () => [],
+                required: true,
             },
         },
         data() {
             return {
                 currentPage: 1,
-                pageSize: 20, // 20 dòng mỗi trang
+                pageSize: 10, // 20 dòng mỗi trang
             };
         },
         computed: {
