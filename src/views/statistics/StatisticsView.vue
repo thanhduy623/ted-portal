@@ -1,7 +1,6 @@
 <template>
     <div>
-        <compTitlePage :titlePage="titlePage" />
-
+        <CompTitlePage :titlePage="titlePage" />
 
         <form class="filter-container">
             <!-- Bộ lọc, ngày bắt đầu, ngày kết thúc -->
@@ -38,7 +37,7 @@
         <br>
 
         <!-- Component bảng để hiển thị dữ liệu -->
-        <compTableData v-if="processData.isFormSubmitted" :columnsConfig="columnsConfig" :tablesConfig="tablesConfig"
+        <CompTableData v-if="processData.isFormSubmitted" :columnsConfig="columnsConfig" :tablesConfig="tablesConfig"
             style="white-space: pre-line;" />
 
     </div>
@@ -51,8 +50,8 @@
     import { connectGAS } from '@/utils/connectGAS'
     import { filterSOM } from './filterSOM.js';
 
-    import compTitlePage from '@/components/compTitlePage.vue'
-    import compTableData from '@/components/compTableData.vue'
+    import CompTitlePage from '@/components/CompTitlePage.vue'
+    import CompTableData from '@/components/CompTableData.vue'
 
     import InputBase from '@/components/inputs/InputBase.vue'
     import InputDate from '@/components/inputs/InputDate.vue'

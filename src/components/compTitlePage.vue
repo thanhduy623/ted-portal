@@ -3,17 +3,15 @@
         <h1 class="title"> {{titlePage.toUpperCase()}} </h1>
 
         <div class="group-button">
-            <!-- Button Chuyển trang tạo -->
-            <RouterLink v-if="linkCreatePage" :to="linkCreatePage">
-                <button>
-                    <i class="bi bi-plus-lg"></i>
-                    <span>Thêm mới</span>
-                </button>
-            </RouterLink>
+            <!-- Render các nút từ actionsPage -->
+            <button v-for="(btn, index) in actionsPage" :key="index" @click="btn.action()">
+                <i :class="btn.icon"></i>
+                <span>{{ btn.name }}</span>
+            </button>
 
             <!-- Button Làm mới dữ liệu nền -->
             <button @click="loadMasterData()">
-                <i class="bi bi-arrow-clockwise"></i>
+                <i class="bi bi-cloud-plus"></i>
                 <span>Làm mới</span>
             </button>
         </div>
@@ -30,13 +28,9 @@
                 type: String,
                 default: "Tiêu đề mặc định"
             },
-            linkCreatePage: {
-                type: String,
-                default: null
-            },
-            showSearchBox: {
-                type: Boolean,
-                default: false
+            actionsPage: {
+                type: Array,
+                default: []
             }
         },
 

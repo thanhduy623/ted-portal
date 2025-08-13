@@ -1,39 +1,37 @@
 <template>
-    <div>
-        <compTitlePage :titlePage="titlePage" />
-        <form>
-            <!-- Niên khóa, phân loại -->
-            <div class="flex-row-container">
-                <SelectSchoolYear v-model:processData="processData" fieldName="idSchoolYear" required />
-                <SelectEventType v-model:processData="processData" fieldName="eventType" required />
-            </div>
+    <form>
+        <!-- Niên khóa, phân loại -->
+        <div class="flex-row-container">
+            <SelectSchoolYear v-model:processData="processData" fieldName="idSchoolYear" required />
+            <SelectEventType v-model:processData="processData" fieldName="eventType" required />
+        </div>
 
-            <!-- Tên sự kiện -->
-            <InputBase v-model:processData="processData" fieldName="eventName" labelName="Tên sự kiện" required />
+        <!-- Tên sự kiện -->
+        <InputBase v-model:processData="processData" fieldName="eventName" labelName="Tên sự kiện" required />
 
-            <!-- Ngày bắt đầu, ngày kết thúc -->
-            <div class="flex-row-container">
-                <InputDate v-model:processData="processData" fieldName="startDate" labelName="Ngày bắt đầu" />
-                <InputDate v-model:processData="processData" fieldName="endDate" labelName="Ngày kết thúc" />
-            </div>
+        <!-- Ngày bắt đầu, ngày kết thúc -->
+        <div class="flex-row-container">
+            <InputDate v-model:processData="processData" fieldName="startDate" labelName="Ngày bắt đầu" />
+            <InputDate v-model:processData="processData" fieldName="endDate" labelName="Ngày kết thúc" />
+        </div>
 
-            <!-- Trạng thái, PD hỗ trợ -->
-            <div class="flex-row-container">
-                <SelectEventStatus v-model:processData="processData" fieldName="statusEvent" required />
-                <SelectTeddyActive v-model:processData="processData" fieldName="idSuporter" labelName="PD hỗ trợ"
-                    idTeamFilter="PD" />
-            </div>
+        <!-- Trạng thái, PD hỗ trợ -->
+        <div class="flex-row-container">
+            <SelectEventStatus v-model:processData="processData" fieldName="statusEvent" required />
+            <SelectTeddyActive v-model:processData="processData" fieldName="idSuporter" labelName="PD hỗ trợ"
+                idTeamFilter="PD" />
+        </div>
 
-            <!-- Tên ghi chú -->
-            <InputBase v-model:processData="processData" fieldName="takeNote" labelName="Ghi chú" />
+        <!-- Tên ghi chú -->
+        <InputBase v-model:processData="processData" fieldName="takeNote" labelName="Ghi chú" />
 
-            <!-- Nhóm các nút chức năng -->
-            <div class="flex-row-container right">
-                <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
-                <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
-            </div>
-        </form>
-    </div>
+        <!-- Nhóm các nút chức năng -->
+        <div class="flex-row-container right">
+            <button v-if="props.setControl" @click.prevent="props.setControl()"> TRỞ VỀ</button>
+            <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
+            <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
+        </div>
+    </form>
 </template>
 
 <script setup>
@@ -52,7 +50,11 @@
     import SelectTeddyActive from '@/components/selects/SelectTeddyActive.vue'
 
 
-    const titlePage = 'Thêm sự kiện'
+    //PROPS: Các biến nhận vào
+    const props = defineProps({
+        setControl: { type: Function, required: true },
+    })
+
 
     // Data tập trung
     const processData = ref({
@@ -63,18 +65,20 @@
     })
 
 
-    // Final data gửi đi = inputData + extraData
+    // COMPUTED: Hợp nhất dữ liệu: inputData + extraData
     const finalData = computed(() => ({
         ...processData.value.inputData,
         ...processData.value.extraData
     }))
 
-    // Form valid = tất cả validateData đều true
+
+    // VALID: Kiểm tra validateData (tất cả đều hợp lệ)
     const isFormValid = computed(() => {
         const validateData = processData.value.validateData || {}
         return Object.values(validateData).length > 0 &&
             Object.values(validateData).every(v => v === true)
     })
+
 
     // HÀM: Làm mới form
     function cleanForm() {

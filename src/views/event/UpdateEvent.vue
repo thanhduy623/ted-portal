@@ -1,6 +1,5 @@
 <template>
     <div>
-        <compTitlePage :titlePage="titlePage" />
         <form>
             <!-- Niên khóa, phân loại -->
             <div class="flex-row-container">
@@ -29,6 +28,7 @@
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
+                <button v-if="props.setControl" @click.prevent="props.setControl()"> TRỞ VỀ</button>
                 <button v-if="isLock" type="reset" @click.prevent="changeForm">CHỈNH SỬA</button>
                 <button v-if="!isLock" type="submit" @click.prevent="submitForm" class="primary">CẬP NHẬT</button>
             </div>
@@ -52,11 +52,16 @@
     import SelectEventStatus from '@/components/selects/SelectEventStatus.vue'
     import SelectTeddyActive from '@/components/selects/SelectTeddyActive.vue'
 
-    const titlePage = 'Cập nhật sự kiện'
-    const idParam = useRoute().params.id;
-    const isLock = ref(true)
 
-    // Data tập trung
+    //PROPS: Các biến nhận vào
+    const props = defineProps({
+        dataSelected: { type: Object, required: true },
+        setControl: { type: Function, required: true }
+    })
+
+
+    // DATA: Khai báo dữ liệu ban đầu
+    const isLock = ref(true)
     const processData = ref({
         inputData: {},
         validateData: {},
@@ -65,30 +70,29 @@
     })
 
 
-    // Final data gửi đi = inputData + extraData
+    // COMPUTED: Hợp nhất dữ liệu: inputData + extraData
     const finalData = computed(() => ({
         ...processData.value.inputData,
         ...processData.value.extraData
     }))
 
-    // Form valid = tất cả validateData đều true
+
+    // VALID: Kiểm tra validateData (tất cả đều hợp lệ)
     const isFormValid = computed(() => {
         const validateData = processData.value.validateData || {}
         return Object.values(validateData).length > 0 &&
             Object.values(validateData).every(v => v === true)
     })
 
-    // Gán thông tin ban đầu
-    onMounted(() => {
-        getInfoTeddy(idParam);
-        lockForm()
-    });
 
-    // Lấy thông tin teddy
-    async function getInfoTeddy(id) {
-        const res = await connectGAS("getEventByConditions", { idEvent: id })
-        processData.value.inputData = res.data[0]
-    }
+    // WATCH: Theo dõi dataSelected và cập nhật lại form
+    watch(() => props.dataSelected, newVal => {
+        processData.value.inputData = { ...newVal }
+        isLock.value = true
+        lockForm()
+    }, { immediate: true, deep: true })
+
+
 
     // HÀM: Chỉnh sửa form
     function changeForm() {
@@ -96,17 +100,16 @@
         isLock.value = false;
     }
 
-    // HÀM: Gửi form
+    // HÀM: Gửi dữ liệu form
     async function submitForm() {
         console.clear();
         processData.value.isFormSubmitted = true;
 
-        if (isFormValid.value) {
-            console.table(finalData.value)
-            processData.value.isFormSubmitted = false;
-            await connectGAS('updateEvent', finalData.value)
-            isLock.value = true;
-            lockForm();
-        }
+        if (!isFormValid.value) { return }
+
+        processData.value.isFormSubmitted = false;
+        await connectGAS('updateEvent', finalData.value)
+        isLock.value = true;
+        lockForm();
     }
 </script>

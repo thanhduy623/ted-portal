@@ -1,6 +1,5 @@
 <template>
     <div>
-        <compTitlePage :titlePage="titlePage" />
         <form>
             <!-- Tên và mã sự kiện -->
             <div class="flex-row-container">
@@ -28,6 +27,7 @@
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
+                <button v-if="props.setControl" @click.prevent="props.setControl()"> TRỞ VỀ</button>
                 <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
                 <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
             </div>
@@ -58,7 +58,12 @@
     import CheckShiftPostion from '@/components/checks/CheckShiftPostion.vue'
 
 
-    const titlePage = 'Ghi nhận ca chạy'
+    //PROPS: Các biến nhận vào
+    const props = defineProps({
+        dataSelected: { type: Object, required: true },
+        setControl: { type: Function, required: true },
+    })
+
 
     // Data tập trung
     const processData = ref({
@@ -67,22 +72,22 @@
         extraData: {},
         isFormSubmitted: false
     })
-    processData.value.inputData.idEvent = useRoute().params.id;
-    processData.value.inputData.eventName = useRoute().query.name;
 
 
-    // Final data gửi đi = inputData + extraData
+    // COMPUTED: Hợp nhất dữ liệu: inputData + extraData
     const finalData = computed(() => ({
         ...processData.value.inputData,
         ...processData.value.extraData
     }))
 
-    // Form valid = tất cả validateData đều true
+
+    // VALID: Kiểm tra validateData (tất cả đều hợp lệ)
     const isFormValid = computed(() => {
         const validateData = processData.value.validateData || {}
         return Object.values(validateData).length > 0 &&
             Object.values(validateData).every(v => v === true)
     })
+
 
     // HÀM: Làm mới form
     function cleanForm() {
@@ -97,45 +102,50 @@
         processData.value.isFormSubmitted = true;
         await nextTick();
 
-        if (isFormValid.value) {
-            console.table(finalData.value)
-            console.log(finalData.value);
-            processData.value.isFormSubmitted = false;
-            const res = await connectGAS('addShift', finalData.value);
-            if (!res.success) { return }
-            tablesConfig.value = res.data?.reverse();
-            cleanForm()
-        }
+        if (!isFormValid.value) { return }
+        processData.value.isFormSubmitted = false;
+        const res = await connectGAS('addShift', finalData.value);
+
+        if (!res.success) { return }
+        tablesConfig.value = res.data?.reverse();
+        cleanForm()
     }
 
 
 
     /********************************************************************************
-    ******************************** *BẢNG DỮ LIỆU **********************************
+    ********************************* BẢNG DỮ LIỆU **********************************
     *********************************************************************************/
 
-    // HÀM: Xóa dữ liệu bảng
-    const deleteShift = async row => {
-        const isConfirmed = await eventBus.confirm(
-            `Bạn có chắc chắn muốn xóa ca chạy của "${row.fullName}" vào ngày ${row.date}?`,
-        );
-
-        if (!isConfirmed) return;
-        const res = await connectGAS("deleteShift", row);
-        res.success
-            ? tablesConfig.value = tablesConfig.value.filter(i => !(i.idEvent === row.idEvent && i.idTeddy === row.idTeddy && i.date === row.date))
-            : console.error(res.message || "Xóa thất bại");
-    };
 
 
-    // DATA: Khởi tạo dữ liệu bảng
+    // MOUNTED: Gán dữ liệu và form và tải dữ liệu
     const tablesConfig = ref([])
     onMounted(async () => {
-        const res = await connectGAS("getShiftByConditions", { idEvent: useRoute().params.id }, false)
-        if (res?.success && Array.isArray(res.data)) {
-            tablesConfig.value = res.data
-        }
+        const { idEvent, eventName } = props.dataSelected
+        processData.value.inputData.idEvent = idEvent
+        processData.value.inputData.eventName = eventName
+        const res = await connectGAS('getShiftByConditions', { idEvent }, false)
+
+        if (!res.success) { return }
+        tablesConfig.value = res.data;
     })
+
+
+    // HÀM: Xóa dữ liệu bảng
+    const deleteRow = async row => {
+        if (!await eventBus.confirm(`Bạn có muốn xóa vai trò của "${row.fullName}" ?`)) return;
+
+        const res = await connectGAS("getShiftByConditions", row);
+
+        if (res.success) {
+            tablesConfig.value = tablesConfig.value.filter(
+                i => JSON.stringify(i) !== JSON.stringify(row)
+            );
+        } else {
+            console.error(res.message || "Xóa thất bại");
+        }
+    };
 
 
     // DATA: Khởi tạo cấu trúc bảng
@@ -143,12 +153,12 @@
         { label: 'Ngày chạy', key: 'date' },
         { label: 'Mã sinh viên', key: 'idTeddy' },
         { label: 'Họ và tên', key: 'fullName' },
-        { label: 'Số lượng', key: 'nameShift' },
+        { label: 'Số lượng', key: 'numberShift' },
         { label: 'Vị trí', key: 'positionShift' },
         {
             label: 'Chức năng',
             key: 'actions',
-            actions: [{ label: 'Xóa ca chạy', icon: 'bi bi-trash3-fill', action: deleteShift },]
+            actions: [{ label: 'Xóa ca chạy', icon: 'bi bi-trash3-fill', action: deleteRow },]
         }
     ]
 </script>
