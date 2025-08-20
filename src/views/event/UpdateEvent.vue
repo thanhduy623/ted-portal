@@ -28,7 +28,6 @@
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
-                <button v-if="props.setControl" @click.prevent="props.setControl()"> TRỞ VỀ</button>
                 <button v-if="isLock" type="reset" @click.prevent="changeForm">CHỈNH SỬA</button>
                 <button v-if="!isLock" type="submit" @click.prevent="submitForm" class="primary">CẬP NHẬT</button>
             </div>
@@ -56,7 +55,6 @@
     //PROPS: Các biến nhận vào
     const props = defineProps({
         dataSelected: { type: Object, required: true },
-        setControl: { type: Function, required: true }
     })
 
 
@@ -86,9 +84,10 @@
 
 
     // WATCH: Theo dõi dataSelected và cập nhật lại form
-    watch(() => props.dataSelected, newVal => {
+    watch(() => props.dataSelected, async newVal => {
         processData.value.inputData = { ...newVal }
         isLock.value = true
+        await nextTick()
         lockForm()
     }, { immediate: true, deep: true })
 

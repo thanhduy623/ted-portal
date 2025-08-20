@@ -4,10 +4,13 @@
 
         <div class="group-button">
             <!-- Render các nút từ actionsPage -->
-            <button v-for="(btn, index) in actionsPage" :key="index" @click="btn.action()">
-                <i :class="btn.icon"></i>
-                <span>{{ btn.name }}</span>
-            </button>
+            <template v-for="(btn, index) in actionsPage" :key="index">
+                <button v-if="btn && (btn.show === undefined || btn.show)" @click="btn.action && btn.action()">
+                    <i :class="btn.icon"></i>
+                    <span>{{ btn.name }}</span>
+                </button>
+            </template>
+
 
             <!-- Button Làm mới dữ liệu nền -->
             <button @click="loadMasterData()">
@@ -30,7 +33,7 @@
             },
             actionsPage: {
                 type: Array,
-                default: []
+                default: () => []
             }
         },
 

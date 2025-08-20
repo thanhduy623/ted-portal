@@ -135,7 +135,7 @@
     }
 
     function handleExport() {
-        exportToExcel(columnsConfig.value, tablesConfig.value, "teddy_data.xlsx");
+        exportToExcel(columnsConfig.value, tablesConfig.value, "Thong-ke-SOM.xlsx");
     }
 
     // Watch: Khi đổi filterSelect

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <compTitlePage :titlePage="titlePage" />
         <form>
             <h2>Thông tin cá nhân</h2>
             <!-- Họ và tên -->

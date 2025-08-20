@@ -13,7 +13,7 @@ tr {
 th,
 td {
     border: 1px solid var(--theme-color-gray);
-    padding: 10px;
+    padding: 5px;
     text-align: left;
 }
 
@@ -30,4 +30,14 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #34699a63;
+}
+
+table i {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    justify-content: center;
+    background-color: var(--theme-color-1);
+    border-radius: 3px;
+    padding: 5px;
 }

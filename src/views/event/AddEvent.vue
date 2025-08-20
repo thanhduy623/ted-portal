@@ -27,7 +27,6 @@
 
         <!-- Nhóm các nút chức năng -->
         <div class="flex-row-container right">
-            <button v-if="props.setControl" @click.prevent="props.setControl()"> TRỞ VỀ</button>
             <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
             <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
         </div>
@@ -49,11 +48,6 @@
     import SelectEventStatus from '@/components/selects/SelectEventStatus.vue'
     import SelectTeddyActive from '@/components/selects/SelectTeddyActive.vue'
 
-
-    //PROPS: Các biến nhận vào
-    const props = defineProps({
-        setControl: { type: Function, required: true },
-    })
 
 
     // Data tập trung

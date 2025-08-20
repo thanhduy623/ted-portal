@@ -1,67 +1,126 @@
 <template>
     <div>
-        <!-- Component tiêu đề trang -->
-        <compTitlePage :titlePage="titlePage" :linkCreatePage="linkCreatePage" />
+        <!-- Thanh tiêu đề -->
+        <compTitlePage :titlePage="currentTitle" :actionsPage="actionsPage" />
 
+        <!-- Bảng dữ liệu -->
+        <div v-show="controlShow.tableData">
+            <compTableData :columnsConfig="columnsConfig" :tablesConfig="tablesConfig" />
+        </div>
 
-        <!-- Component bảng để hiển thị dữ liệu -->
-        <compTableData :columnsConfig="columnsConfig" :tablesConfig="tablesConfig" />
+        <!-- Trang tạo mới -->
+        <div v-if="controlShow.addTeddy">
+            <AddTeddy />
+        </div>
+
+        <!-- Trang tạo mới -->
+        <div v-if="controlShow.updateTeddy">
+            <UpdateTeddy :dataSelected="dataSelected" />
+        </div>
+
     </div>
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted, computed } from 'vue'
     import { useRouter } from 'vue-router'
+    import { connectGAS } from '@/utils/connectGAS.js'
+    import { exportToExcel } from '@/utils/exportExcel'
 
     import compTitlePage from "@/components/compTitlePage.vue"
     import compTableData from "@/components/compTableData.vue"
-    import { connectGAS } from '@/utils/connectGAS.js'
+    import AddTeddy from "@/views/teddy/AddTeddy.vue"
+    import UpdateTeddy from "@/views/teddy/UpdateTeddy.vue"
 
-    // Router instance
-    const router = useRouter()
 
-    // Tiêu đề và link
-    const titlePage = "Quản lý nhân sự"
-    const linkCreatePage = "/teddy/add"
+    // Dữ liệu quản trị trang
+    const tablesConfig = ref([])
+    const dataSelected = ref([])
 
-    // State
-    const tablesConfig = ref(null)
+    const controlShow = ref({
+        tableData: true,
+        addTeddy: false,
+        updateTeddy: false,
+    })
 
-    // Actions cho bảng
-    const handleViewTeddy = (data) => {
-        router.push('/teddy/edit/' + data.idTeddy)
+    const controlTitle = ref({
+        tableData: "Quản lý nhân sự",
+        addTeddy: "Thêm nhân sự",
+        updateTeddy: "Cập nhật thông tin",
+    })
+
+
+    // Hành động của trang
+    const actionsPage = computed(() => [
+        {
+            name: 'Trở lại',
+            icon: 'bi bi-arrow-left',
+            action: () => setControl(),
+            show: !controlShow.value.tableData
+        },
+        {
+            name: 'Thêm mới',
+            icon: 'bi bi-plus-lg',
+            action: () => setControl('addTeddy'),
+            show: controlShow.value.tableData
+        },
+        {
+            name: 'Xuất Excel',
+            icon: 'bi bi-file-earmark-excel',
+            action: () => exportToExcel(columnsConfig.value, tablesConfig.value, "Danh-sach-nhan-su.xlsx"),
+            show: controlShow.value.tableData
+        }
+    ])
+
+
+
+
+    // HÀM: Hiển thị đối tượng và gọi đánh dấu
+    const showElement = (key, row = {}) => {
+        setControl(key)
+        dataSelected.value = row
     }
 
-    const handleAction = (data) => {
-        alert(data.idTeddy)
+
+    // HÀM: Đánh dấu đối tượng được hiển thị
+    const setControl = (activeKey = "tableData") => {
+        Object.keys(controlShow.value).forEach(key => {
+            controlShow.value[key] = key === activeKey
+        })
     }
 
-    // Columns
-    const columnsConfig = [
-        { label: 'Mã sinh viên', key: 'idTeddy' },
+
+    // Khởi tạo: Các action sẽ thao tác
+    const actions = [
+        {
+            label: 'Xem thông tin', icon: 'bi bi-eye-fill',
+            action: row => showElement('updateTeddy', row)
+        },
+        {
+            label: 'Đặt lại mật khẩu', icon: 'bi bi-key-fill',
+            action: row => connectGAS('resetPassword', row, false)
+        },
+    ]
+
+
+    // Khởi tạo: Định nghĩa các cột
+    const columnsConfig = ref([
+        { label: 'MSSV', key: 'idTeddy' },
         { label: 'Họ và tên', key: 'fullName' },
         { label: 'Thế hệ', key: 'generation' },
         { label: 'Bộ phận', key: 'idTeam' },
-        { label: 'Trạng Thái', key: 'status' },
-        {
-            label: 'Chức năng',
-            key: 'actions',
-            actions: [
-                { label: 'Xem thông tin', icon: 'fas fa-eye', action: handleViewTeddy },
-                { label: 'Khóa tài khoản', icon: 'bi bi-lock-fill', action: handleAction },
-                { label: 'Khôi phục mật khẩu', icon: 'bi bi-rocket-fill', action: handleAction }
-            ]
-        }
-    ]
+        { label: 'Chức năng', key: 'actions', actions: actions }
+    ])
 
-    // Lấy dữ liệu
-    const getActiveTeddy = async () => {
-        const teddy = await connectGAS("getActiveTeddy", {})
-        tablesConfig.value = teddy.data
-    }
 
-    // Mounted
-    onMounted(() => {
-        getActiveTeddy()
+    // Khởi tạo ban đầu: Lấy dữ liệu sự kiện
+    onMounted(async () => {
+        const res = await connectGAS("getAllTeddy", {})
+        tablesConfig.value = res.success ? res.data : {}
+    })
+
+    const currentTitle = computed(() => {
+        const activeKey = Object.keys(controlShow.value).find(k => controlShow.value[k])
+        return controlTitle.value[activeKey] || ''
     })
 </script>

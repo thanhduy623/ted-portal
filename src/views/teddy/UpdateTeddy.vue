@@ -1,6 +1,5 @@
 <template>
     <div>
-        <compTitlePage :titlePage="titlePage" />
         <form>
             <h2>Thông tin cá nhân</h2>
             <!-- Họ và tên -->
@@ -77,11 +76,13 @@
     import SelectGeneration from '@/components/selects/SelectGeneration.vue'
     import SelectTeddyStatus from '@/components/selects/SelectTeddyStatus.vue'
 
-    const titlePage = 'Cập nhật nhân sự'
-    const idParam = useRoute().params.id;
-    const isLock = ref(true)
+    //PROPS: Các biến nhận vào
+    const props = defineProps({
+        dataSelected: { type: Object, required: true },
+    })
 
-    // Data tập trung
+    // DATA: Khai báo dữ liệu ban đầu
+    const isLock = ref(true)
     const processData = ref({
         inputData: {},
         validateData: {},
@@ -90,30 +91,29 @@
     })
 
 
-    // Final data gửi đi = inputData + extraData
+    // COMPUTED: Hợp nhất dữ liệu: inputData + extraData
     const finalData = computed(() => ({
         ...processData.value.inputData,
         ...processData.value.extraData
     }))
 
-    // Form valid = tất cả validateData đều true
+
+    // VALID: Kiểm tra validateData (tất cả đều hợp lệ)
     const isFormValid = computed(() => {
         const validateData = processData.value.validateData || {}
         return Object.values(validateData).length > 0 &&
             Object.values(validateData).every(v => v === true)
     })
 
-    // Gán thông tin ban đầu
-    onMounted(() => {
-        getInfoTeddy(idParam);
-        lockForm()
-    });
 
-    // Lấy thông tin teddy
-    async function getInfoTeddy(id) {
-        const res = await connectGAS("getTeddyByConditions", { idTeddy: id })
-        processData.value.inputData = res.data[0]
-    }
+    // WATCH: Theo dõi dataSelected và cập nhật lại form
+    watch(() => props.dataSelected, async newVal => {
+        processData.value.inputData = { ...newVal }
+        isLock.value = true
+        await nextTick()
+        lockForm()
+    }, { immediate: true, deep: true })
+
 
     // HÀM: Chỉnh sửa form
     function changeForm() {

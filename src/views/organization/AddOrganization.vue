@@ -24,7 +24,6 @@
 
             <!-- Nhóm các nút chức năng -->
             <div class="flex-row-container right">
-                <button v-if="props.setControl" @click.prevent="props.setControl()"> TRỞ VỀ</button>
                 <button type="reset" @click.prevent="cleanForm">LÀM MỚI</button>
                 <button type="submit" @click.prevent="submitForm" class="primary"> TẠO MỚI</button>
             </div>
@@ -57,7 +56,6 @@
     //PROPS: Các biến nhận vào
     const props = defineProps({
         dataSelected: { type: Object, required: true },
-        setControl: { type: Function, required: true },
     })
 
 
