@@ -20,25 +20,14 @@
                 <button type="submit" @click.prevent="submitFile" class="primary"> TẠO MỚI</button>
             </div>
 
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tên file</th>
-                            <th>Dung lượng</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(file, index) in pendingFiles" :key="file.name + index">
-                            <td>{{ file.name }}</td>
-                            <td>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</td>
-                            <td>
-                                <button @click="removeFile(index)">Xóa</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Danh sách file tạm -->
+            <div v-if="pendingFiles.length">
+                <div class="pending-list">
+                    <p v-for="(file, index) in pendingFiles" :key="file.name + index">
+                        <span class="remove-icon" @click="removeFile(index)">❌</span>
+                        {{ file.name }} - {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+                    </p>
+                </div>
             </div>
         </form>
 

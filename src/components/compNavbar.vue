@@ -1,13 +1,26 @@
 <template>
   <div class="navbar">
-    <RouterLink v-for="(item, index) in menuLists" :key="index" :to="item.url" class="url-menu">
-      <div class="navbar-item">
-        <i :class="item.icon"></i> <!-- dùng class icon bootstrap -->
-        <h2 class="menu-item-title">{{ item.name }}</h2>
-      </div>
-    </RouterLink>
+    <template v-for="(item, index) in menuLists" :key="index">
+      <!-- Nếu là PDF hoặc link ngoài -->
+      <a v-if="item.url.endsWith('.pdf') || item.url.startsWith('http')" :href="item.url" target="_blank" rel="noopener"
+        class="url-menu">
+        <div class="navbar-item">
+          <i :class="item.icon"></i>
+          <h2 class="menu-item-title">{{ item.name }}</h2>
+        </div>
+      </a>
+
+      <!-- Nếu là route trong Vue Router -->
+      <RouterLink v-else :to="item.url" class="url-menu">
+        <div class="navbar-item">
+          <i :class="item.icon"></i>
+          <h2 class="menu-item-title">{{ item.name }}</h2>
+        </div>
+      </RouterLink>
+    </template>
   </div>
 </template>
+
 
 
 

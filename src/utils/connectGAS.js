@@ -16,7 +16,7 @@ export async function connectGAS(action, data, banned = true) {
     // URL của Google Apps Script Web App đã triển khai
     // Được đặt cứng ở đây để tập trung cấu hình
     console.clear()
-    const gasUrl = "https://script.google.com/macros/s/AKfycbzItlCAlaxpgnvZ3P6p5woOuesJD-po7PgpIB6anPUNCbZajQ7XlKQZaM4lnGqiWTB1Ng/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbzU0f9LKfMUVCkHYQO_b98c7BvRElpPbH6fTYAyZQdeuWS5uKApBlVONHFgn1nxe4A5/exec";
     const token = sessionGet('token');
 
     const dataToSend = {

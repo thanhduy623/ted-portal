@@ -6,9 +6,10 @@ import defaultLayout from '@/layouts/defaultLayout.vue'
 import AuthLayout from '@/layouts/authLayout.vue'
 
 // Home + auth
-import HomePage from '@/views/HomeView.vue'
 import NotFound from '@/views/NotFound.vue'
+import HomePage from '@/views/HomeView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
+import PersonalView from '@/views/auth/PersonalView.vue'
 
 
 import YearView from '@/views/YearView.vue'
@@ -21,17 +22,9 @@ import UpdateTeddy from '@/views/teddy/UpdateTeddy.vue'
 
 // Event
 import EventView from '@/views/event/EventView.vue'
-import AddEvent from '@/views/event/AddEvent.vue'
-import UpdateEvent from '@/views/event/UpdateEvent.vue'
 
-// Organnization
-import AddOrganization from '@/views/organization/AddOrganization.vue'
-
-// Mistake
-import AddMistake from '@/views/mistake/AddMistake.vue'
-
-// Shift
-import AddShift from '@/views/shift/AddShift.vue'
+// Document
+import DocumentView from '@/views/document/DocumentView.vue'
 
 // Statistics
 import StatisticsView from '@/views/statistics/StatisticsView.vue'
@@ -43,25 +36,17 @@ const routes = [
     component: defaultLayout,
     children: [
       { path: '', component: HomePage },
+      { path: '/personal', component: PersonalView },
 
       { path: 'year', component: YearView },
       { path: 'generation', component: GenerationView },
       { path: 'department', component: HomePage },
 
       { path: 'teddy', component: TeddyView },
-      { path: 'teddy/add', component: AddTeddy },
-      { path: 'teddy/edit/:id', component: UpdateTeddy },
 
       { path: 'event', component: EventView },
-      { path: 'event/add', component: AddEvent },
-      { path: 'event/edit/:id', component: UpdateEvent },
-      { path: 'shift/add/:id/:nameEvent', component: AddShift },
 
-      { path: 'organization/add/:id', component: AddOrganization },
-
-      { path: 'mistake/add/:id', component: AddMistake },
-
-      { path: 'shift/add/:id', component: AddShift },
+      { path: 'document', component: DocumentView },
 
       { path: 'statistics', component: StatisticsView },
     ]
