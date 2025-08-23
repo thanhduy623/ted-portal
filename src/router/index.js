@@ -17,14 +17,11 @@ import GenerationView from '@/views/GenerationView.vue'
 
 // Teddy
 import TeddyView from '@/views/teddy/TeddyView.vue'
-import AddTeddy from '@/views/teddy/AddTeddy.vue'
-import UpdateTeddy from '@/views/teddy/UpdateTeddy.vue'
+
 
 // Event
 import EventView from '@/views/event/EventView.vue'
 
-// Document
-import DocumentView from '@/views/document/DocumentView.vue'
 
 // Statistics
 import StatisticsView from '@/views/statistics/StatisticsView.vue'
@@ -45,8 +42,6 @@ const routes = [
       { path: 'teddy', component: TeddyView },
 
       { path: 'event', component: EventView },
-
-      { path: 'document', component: DocumentView },
 
       { path: 'statistics', component: StatisticsView },
     ]
