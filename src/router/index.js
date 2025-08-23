@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { sessionGet } from '@/utils/sessionStore'
 
 // Layout
@@ -62,9 +62,10 @@ const routes = [
 
 // Định tuyến đường dẫn tanh
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes
 })
+
 
 
 // Bảo vệ yêu cầu token
