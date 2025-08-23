@@ -9,9 +9,9 @@ export function filterSOM(context, shiftsData = [], organizationData = [], mista
             columnsConfig = [
                 { label: 'MSSV', key: 'idTeddy' },
                 { label: 'Họ tên', key: 'fullName' },
-                { label: 'Tổng tổ chức', key: 'totalOrganization' },
+                { label: 'Ban tổ chức', key: 'totalOrganization' },
                 { label: 'Tổng ca chạy', key: 'totalShifts' },
-                { label: 'Tổng ca lỗi', key: 'totalMistakes' },
+                { label: 'Tổng vi phạm', key: 'totalMistakes' },
             ];
             tablesConfig = normalizeData(shiftsData, mistakesData, organizationData);
             break;
@@ -20,7 +20,6 @@ export function filterSOM(context, shiftsData = [], organizationData = [], mista
             columnsConfig = [
                 { label: 'MSSV', key: 'idTeddy' },
                 { label: 'Họ tên', key: 'fullName' },
-                { label: 'Danh sách tổ chức', key: 'organizationList' },
                 { label: 'Danh sách ca chạy', key: 'shiftList' },
                 { label: 'Danh sách lỗi', key: 'mistakeList' },
             ];
