@@ -21,8 +21,7 @@
                 <SelectShift v-model:processData="processData" fieldName="numberShift" required />
             </div>
 
-            <CheckShiftPostion v-model:processData="processData" fieldName="positionShift" labelName="Ví trí chạy"
-                required />
+            <CheckShiftPostion v-model:processData="processData" fieldName="positionShift" labelName="Ví trí chạy" />
 
 
             <!-- Nhóm các nút chức năng -->

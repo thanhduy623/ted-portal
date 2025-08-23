@@ -28,7 +28,7 @@
         { key: "1", statusEvent: "Chạy 1 ca" },
         { key: "2", statusEvent: "Chạy 2 ca" },
         { key: "3", statusEvent: "Chạy 3 ca" },
-        { key: "3", statusEvent: "Chạy 4 ca" },
+        { key: "4", statusEvent: "Chạy 4 ca" },
         { key: "5", statusEvent: "Chạy 5 ca" },
         { key: "6", statusEvent: "Chạy 6 ca" },
     ]
