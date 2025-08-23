@@ -1,4 +1,7 @@
 // src/data/menuList.js
+const baseUrl = import.meta.env.BASE_URL;
+
+
 export default [
     {
         name: "Cá nhân",
@@ -45,7 +48,7 @@ export default [
     },
     {
         name: "Hướng dẫn",
-        url: "/introduction.pdf",
+        url: baseUrl + "introduction.pdf",
         icon: "bi bi-book", // icon sách
         permission: 'viewShift'
     },
