@@ -93,7 +93,7 @@
 
         files.forEach(file => {
             if (file.type !== 'application/pdf') {
-                alert(`File "${file.name}" không phải PDF và sẽ bị bỏ qua.`)
+                eventBus.notify('warning', `File "${file.name}" không phải PDF và sẽ bị bỏ qua.`)
                 return
             }
             // Tránh trùng tên file
@@ -127,15 +127,10 @@
         processData.value.isFormSubmitted = true;
         await nextTick();
 
-        if (!isFormValid.value) {
-            alert("Form chưa hợp lệ");
-            return;
-        }
-
         processData.value.isFormSubmitted = false;
 
         if (!pendingFiles.value.length) {
-            alert("Chưa có file nào để upload");
+            eventBus.notify('warning', "Chưa có file nào để lưu trữ")
             return;
         }
 
@@ -153,7 +148,7 @@
         const res = await connectGAS('addDocument', payload);
 
         if (!res.success) {
-            alert(res.message || "Upload thất bại");
+            eventBus.notify('warning', res.message || "Upload thất bại")
             return;
         }
 
@@ -164,7 +159,7 @@
         // Xóa danh sách file chờ
         pendingFiles.value = [];
 
-        alert(`Upload thành công ${res.resultsUpload?.length || 0} file`);
+        eventBus.notify('warning', `Upload thành công ${res.resultsUpload?.length || 0} file`)
     }
 
 
@@ -204,7 +199,7 @@
             memory.value = res.storage || memory.value;
         } else {
             console.error(res.message || "Xóa thất bại");
-            alert(res.message || "Xóa thất bại");
+            eventBus.notify('warning', res.message || "Xóa thất bại")
         }
     };
 
