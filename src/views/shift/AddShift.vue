@@ -133,7 +133,7 @@
     const deleteRow = async row => {
         if (!await eventBus.confirm(`Bạn có muốn xóa vai trò của "${row.fullName}" ?`)) return;
 
-        const res = await connectGAS("getShiftByConditions", row);
+        const res = await connectGAS("deleteShift", row);
 
         if (res.success) {
             tablesConfig.value = tablesConfig.value.filter(
